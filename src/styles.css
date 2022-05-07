@@ -1,0 +1,70 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.Outer {
+  background-color: white;
+}
+
+.Spacer {
+  width: 10vh;
+  height: 30vh;
+  display: block;
+}
+
+.Preview_image {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  display: block;
+  z-index: 100;
+}
+
+.Video-Container {
+  margin: auto;
+  /* overflow: hidden; */
+  display: block;
+  height: 100vh;
+  aspect-ratio: 1/1;
+  clip-path: 0 0;
+  transform: translatez(0);
+  visibility: hidden;
+}
+.Video {
+  margin-left: -25vh;
+  position: absolute;
+}
+
+.Canvas {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+}
+
+.Drawing {
+}
+
+body {
+  margin: 0;
+  background-color: #fff;
+  color: #fff;
+  font-family: Monospace;
+  font-size: 13px;
+  line-height: 24px;
+  overscroll-behavior: none;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.Photo {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+}
+/* 
+.Webcam {
+  display: none;
+} */
