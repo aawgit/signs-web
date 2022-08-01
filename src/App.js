@@ -19,7 +19,8 @@ export default function App() {
       webcamRef.current.video.readyState === 4
     ) {
       const screenshot = webcamRef.current.getScreenshot();
-      setHandData(await net.estimateHands(webcamRef.current.video));
+      const poseEstimateResult = await net.estimateHands(webcamRef.current.video)
+      setHandData(poseEstimateResult);
       // setPhoto(screenshot);
 
       if (cameraHidden === "hidden") {
