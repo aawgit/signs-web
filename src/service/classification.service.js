@@ -228,3 +228,12 @@ export function unFlatten(flattenCoordinates) {
     // console.log(`From unFlatten() ${landmarkPoints}`)
     return landmarkPoints;
 }
+
+export class CascadedClassifier {
+    constructor(model) {
+      this.model = model
+        }
+        predict(dataset) {
+           return this.model.predict(dataset)
+          }
+}
