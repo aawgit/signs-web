@@ -5,7 +5,7 @@ import KNN from 'ml-knn'
 import { trainingData } from './training.data';
 import {
     normalizeMovement, findAngle, scaleVertices, stopRotationAroundX, stopRotationAroundZ,
-    stopRotationAroundY, unFlatten, flatten
+    stopRotationAroundY, unFlatten, flatten, CascadedClassifier
 } from '../service/classification.service';
 
 
@@ -64,16 +64,29 @@ function buildFeatures(data) {
 }
 
 function getKnnClassifier(trainingData) {
-    // trainingData.shift()
-    const unFlattenData = trainingData.map(td => unFlatten(td))
-    const features = buildFeatures(unFlattenData)
+    console.log(`Input...`)
+    console.log(trainingData)
+
+    const trainY = trainingData.map(row => row[0])
+    console.log(`trainY`)
+    console.log(trainY)
+    const trainXUnProcessed = trainingData.map(row => row.slice(1))
+    console.log(`trainXUnProcessed...`)
+    console.log(trainXUnProcessed)
+    const unFlattenData = trainXUnProcessed.map(td => unFlatten(td))
+    console.log(`Unflattened training data...`)
+    console.log(unFlattenData)
+    const trainX = buildFeatures(unFlattenData)
     // const train_dataset = trainingData.map(row => row.slice(0).map(val => Number(val)))
-    console.log(features)
-    const train_labels = trainingData.map(row => row[0])
-    console.log(train_labels)
-    const knn = new KNN(features, train_labels, { k: 3 });
+    console.log(trainX)
+    
+    
+    const knn = new KNN(trainX, trainY, { k: 3 });
     console.log(knn.toJSON())
-    return knn
+
+    const cascadedClassifier = new CascadedClassifier(knn)
+
+    return cascadedClassifier
 }
 
 
