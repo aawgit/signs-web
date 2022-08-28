@@ -1,8 +1,7 @@
 import { softmax } from '@tensorflow/tfjs-core';
 import { LABEL_VS_INDEX, lrLabels, rfLabels } from '../utils/constants';
 import { OutputFilter, getMode } from '../utils/helper';
-import { rfModel } from './models/model_rf';
-import { lrModel } from './models/model_lr';
+import { rfModel, lrModel } from './models';
 
 function normalizeMovement(landmarks) {
     const origin = landmarks[0]
@@ -230,8 +229,7 @@ export function unFlatten(flattenCoordinates) {
     return landmarkPoints;
 }
 
-export function runPreprocessSteps(handData) {
-    const landmarks = handData.length > 0 ? handData[0].landmarks : null
+export function runPreprocessSteps(landmarks) {
     if (!landmarks) return null
     // console.log(landmarks)
     
@@ -309,25 +307,29 @@ export class CascadedClassifier {
         return highestConfPred
     }
 
-    ensemblePredict(dataset) {
+    ensemblePredict(featureVector) {
         const results = []
-        const rawPredLR = lrModel(dataset)
-
+        console.log(`feature vector length ${featureVector.length}`)
+        console.log(`first feature ${featureVector[0]}`)
+        const rawPredLR = lrModel(featureVector)
+        console.log(`lr pred ${rawPredLR}`)
 
         const predLR = this.getPrediction(rawPredLR)
+
         // if(predLR[1]<0.5) return null
-        const rawPredRF = rfModel(dataset)
+        const rawPredRF = rfModel(featureVector)
         const predRF = this.getPrediction(rawPredRF)
 
-        const predIndexKNN = this.model.predict(dataset)
+        const predIndexKNN = this.model.predict(featureVector)
 
         results.push(rfLabels[predRF[0]])
         results.push(lrLabels[predLR[0]])
         results.push(predIndexKNN)
-        if (rfLabels[predRF[0]] == lrLabels[predLR[0]]
-            || rfLabels[predRF[0]] == predIndexKNN
-            || lrLabels[predLR[0]] == predIndexKNN)
-            return getMode(results)
+        return getMode(results)
+        // if (rfLabels[predRF[0]] == lrLabels[predLR[0]]
+        //     || rfLabels[predRF[0]] == predIndexKNN
+        //     || lrLabels[predLR[0]] == predIndexKNN)
+        //     return getMode(results)
     }
 
     ensemblePredict2(dataset) {
@@ -357,8 +359,8 @@ export class CascadedClassifier {
         }
     }
 
-    predict(dataset, angles) {
-        const predIndex = this.ensemblePredict(dataset)
+    predict(featureVector, angles) {
+        const predIndex = this.ensemblePredict(featureVector)
         if (predIndex) {
             const idx = oFilter.filter(predIndex)
             if (idx && idx > 0) {
