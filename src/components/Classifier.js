@@ -147,8 +147,8 @@ export default function ClassifierComponent(props) {
         const featureVector = fv[0]
         const angles = fv[1]
         return (
-            <div>
-                {featureVector ? clf.predict(featureVector, angles) : 'No landmark'}
+            <div style={{fontSize:"100px"}}>
+                {featureVector ? clf.predict(featureVector, angles) : ''}
             </div>
         );
     }
