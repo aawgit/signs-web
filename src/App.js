@@ -6,6 +6,16 @@ import "@tensorflow/tfjs-backend-webgl";
 // import "@mediapipe/hands";
 import ClassifierComponent from "./components/Classifier"
 
+// TODO:
+// Neglect non-signs
+//  - Max distance for KNN
+//  - Prediction probability?
+//  - other category?
+// Refactor the code to proper structure
+// Code quality
+// Remove console.logs
+// Performance
+//  - Remove unnecessary steps
 export default function App() {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [handData, setHandData] = useState();

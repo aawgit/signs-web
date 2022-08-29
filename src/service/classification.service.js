@@ -112,14 +112,14 @@ export function stopRotationAroundZ(landmarksp) {
     const cos = a / c
     const sin = b / c
 
-    
+
     const rotationMat2 = [
         [cos, -sin, 0],
         [sin, cos, 0],
         [0, 0, 1],
     ]
 
-   
+
     const rotationMat3 = [
         [0, 1, 0], [-1, 0, 0], [0, 0, 1]
     ]
@@ -144,13 +144,13 @@ function eucDistance(a, b) {
         ** (1 / 2)
 }
 
-function unitVector(point1, point2){
-  const dis = eucDistance(point1, point2)
-  const uv = []
-  for(let i=0; i<point1.length; i++){
-    uv[i] = (point1[i] - point2[i])/dis
-  }
-  return uv
+function unitVector(point1, point2) {
+    const dis = eucDistance(point1, point2)
+    const uv = []
+    for (let i = 0; i < point1.length; i++) {
+        uv[i] = (point1[i] - point2[i]) / dis
+    }
+    return uv
 }
 
 export function scaleVertices(landmarks) {
@@ -232,7 +232,7 @@ export function unFlatten(flattenCoordinates) {
 export function runPreprocessSteps(landmarks) {
     if (!landmarks) return null
     // console.log(landmarks)
-    
+
     // console.log(`After Scaling`)
     // console.log(pre1)
     const pre2 = normalizeMovement(landmarks)
@@ -299,9 +299,29 @@ export class CascadedClassifier {
         this.model = model
     }
 
-    getPrediction(rawOutput) {
-        const smPredLRTs = softmax(rawOutput)
-        const smPredLR = smPredLRTs.arraySync()
+    normalizedMax(rawOutput) {
+        let sum = 0
+        for (let i = 0; i < rawOutput.length; i++) {
+            sum = sum + rawOutput[i]
+        }
+        console.log(`Sum ${sum}`)
+        return rawOutput.map(val => val / sum)
+    }
+
+    getPredictionRF(rawOutput) {
+        const smPredLR = this.normalizedMax(rawOutput)
+        // const smPredLR = smPredLRTs.arraySync()
+        // console.log(smPredLR)
+        const highestConfPred = indexOfMax(smPredLR)
+        return highestConfPred
+    }
+
+    getPredictionLR(rawOutput) {
+        const min = Math.min(...rawOutput)
+        console.log(`Min ${min}`)
+        const ro = rawOutput.map(e => e - min)
+        const smPredLR = this.normalizedMax(ro)
+        // const smPredLR = smPredLRTs.arraySync()
         // console.log(smPredLR)
         const highestConfPred = indexOfMax(smPredLR)
         return highestConfPred
@@ -309,21 +329,26 @@ export class CascadedClassifier {
 
     ensemblePredict(featureVector) {
         const results = []
-        console.log(`feature vector length ${featureVector.length}`)
-        console.log(`first feature ${featureVector[0]}`)
         const rawPredLR = lrModel(featureVector)
-        console.log(`lr pred ${rawPredLR}`)
 
-        const predLR = this.getPrediction(rawPredLR)
+        const predLR = this.getPredictionLR(rawPredLR)
 
-        // if(predLR[1]<0.5) return null
         const rawPredRF = rfModel(featureVector)
-        const predRF = this.getPrediction(rawPredRF)
+
+        const predRF = this.getPredictionRF(rawPredRF)
+
+        // These are dirty tricks to catch none class
+        // TODO: Proper way
+        if (predRF[1] < 0.3) return null
+        if ((predRF[0] == 0 || predRF[0] == 12) && predRF[1] < 0.72) return null
+        //
 
         const predIndexKNN = this.model.predict(featureVector)
 
         results.push(rfLabels[predRF[0]])
+        console.log(`RF ${predRF}`)
         results.push(lrLabels[predLR[0]])
+        console.log(`LR ${predLR}`)
         results.push(predIndexKNN)
         return getMode(results)
         // if (rfLabels[predRF[0]] == lrLabels[predLR[0]]
@@ -334,7 +359,7 @@ export class CascadedClassifier {
 
     ensemblePredict2(dataset) {
         const rawPredLR = lrModel(dataset)
-        const predLR = this.getPrediction(rawPredLR)
+        const predLR = this.getPredictionRF(rawPredLR)
         if (predLR[1] > 0.67) {
             console.log(predLR[1])
             return lrLabels[predLR[0]]
@@ -343,7 +368,7 @@ export class CascadedClassifier {
         else {
             const results = []
             const rawPredRF = rfModel(dataset)
-            const predRF = this.getPrediction(rawPredRF)
+            const predRF = this.getPredictionRF(rawPredRF)
             if (predRF[1] > 0.67) {
                 console.log(predRF[1])
                 return rfLabels[predRF[0]]
