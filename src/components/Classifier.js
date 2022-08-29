@@ -1,44 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { EDGE_PAIRS_FOR_ANGLES } from '../utils/constants';
+import { EDGE_PAIRS_FOR_ANGLES, verticesToIgnore, importantFeatures } from '../utils/constants';
 
 import KNN from 'ml-knn'
 import { trainingData } from './training.data';
 import {
-    normalizeMovement, findAngle, scaleVertices, stopRotationAroundX, stopRotationAroundZ,
-    stopRotationAroundY, unFlatten, flatten, CascadedClassifier
+    findAngle, unFlatten, flatten, CascadedClassifier, runPreprocessSteps
 } from '../service/classification.service';
 
 
 
-export function runPreprocessSteps(handData) {
-    const landmarks = handData?.length > 0 ? handData[0].landmarks : null
-    if (!landmarks) return null
-    // console.log(landmarks)
-    const pre1 = scaleVertices(landmarks)
-    // console.log(`After Scaling`)
-    // console.log(pre1)
-    const pre2 = normalizeMovement(pre1)
-    // console.log(`After normalizing`)
-    // console.log(pre2)
-    const pre3 = stopRotationAroundX(pre2)
-    // console.log(`After X`)
-    // console.log(pre3)
-    const pre4 = stopRotationAroundZ(pre3)
-    // console.log(`After Z`)
-    // console.log(pre4)
-    const pre5 = stopRotationAroundY(pre4)
-    // console.log(`After pre-processing`)
-    // console.log(pre5)
-
-    return pre5
-}
-
-
-function buildAngleFeatures(dataRow) {
+function getAngles(landmarks) {
     const anglesForTheRow = []
     EDGE_PAIRS_FOR_ANGLES.forEach(limbPair => {
-        const limb1 = [dataRow[limbPair[0][0]], dataRow[limbPair[0][1]]]
-        const limb2 = [dataRow[limbPair[1][0]], dataRow[limbPair[1][1]]]
+        const limb1 = [landmarks[limbPair[0][0]], landmarks[limbPair[0][1]]]
+        const limb2 = [landmarks[limbPair[1][0]], landmarks[limbPair[1][1]]]
         const angle = findAngle(limb1[0], limb1[1], limb2[1])
         anglesForTheRow.push((angle - 90) / 90)
     })
@@ -53,36 +28,61 @@ function buildCoordinateFeatures(dataRow) {
     return arrayWithValuesRemoved
 }
 
+const selectImportantFeatures = (flattCoAndAngles) => {
+    const indexSet = new Set(importantFeatures);
+    const selected = flattCoAndAngles.filter((value, i) => indexSet.has(i));
+    return selected
+}
+
+const buildFeatureVector = (landmarks, ratio = 1) => {
+    if (!landmarks) return [undefined, undefined]
+    const preProcessed = runPreprocessSteps(landmarks)
+    let preProcessedLandmark = preProcessed[0]
+    const orientations = preProcessed[1]
+    let angles = getAngles(landmarks)
+    if (ratio != 1) {
+        angles = angles.map(a => a * ratio)
+    }
+
+    const indexSet = new Set(verticesToIgnore);
+    preProcessedLandmark = preProcessedLandmark.filter((value, i) => !indexSet.has(i));
+
+    let flatted = flatten(preProcessedLandmark)
+    flatted = flatted.concat(angles)
+
+    flatted = selectImportantFeatures(flatted)
+    return [flatted, orientations]
+}
+
 function buildFeatures(data) {
     const features = data.map(row => {
         const coordinates = buildCoordinateFeatures(row)
         const flattenedCoordinates = flatten(coordinates)
-        const angles = buildAngleFeatures(row)
+        const angles = getAngles(row)
         return flattenedCoordinates.concat(angles)
     })
     return features
 }
 
-function getKnnClassifier(trainingData) {
-    console.log(`Input...`)
-    console.log(trainingData)
+function getCascadedClassifier(Xtrain, ytrain) {
+    // console.log(`Input...`)
+    // console.log(trainingData)
 
-    const trainY = trainingData.map(row => row[0])
-    console.log(`trainY`)
-    console.log(trainY)
-    const trainXUnProcessed = trainingData.map(row => row.slice(1))
-    console.log(`trainXUnProcessed...`)
-    console.log(trainXUnProcessed)
-    const unFlattenData = trainXUnProcessed.map(td => unFlatten(td))
-    console.log(`Unflattened training data...`)
-    console.log(unFlattenData)
-    const trainX = buildFeatures(unFlattenData)
-    // const train_dataset = trainingData.map(row => row.slice(0).map(val => Number(val)))
-    console.log(trainX)
-    
-    
-    const knn = new KNN(trainX, trainY, { k: 3 });
-    console.log(knn.toJSON())
+    // const trainY = trainingData.map(row => row[0])
+    // console.log(`trainY`)
+    // console.log(trainY)
+    // const trainXUnProcessed = trainingData.map(row => row.slice(1))
+    // console.log(`trainXUnProcessed...`)
+    // console.log(trainXUnProcessed)
+    // const unFlattenData = trainXUnProcessed.map(td => unFlatten(td))
+    // console.log(`Unflattened training data...`)
+    // console.log(unFlattenData)
+    // const trainX = buildFeatures(unFlattenData)
+    // // const train_dataset = trainingData.map(row => row.slice(0).map(val => Number(val)))
+    // console.log(trainX)
+
+
+    const knn = new KNN(Xtrain, ytrain, { k: 3 });
 
     const cascadedClassifier = new CascadedClassifier(knn)
 
@@ -104,7 +104,14 @@ export default function ClassifierComponent(props) {
     }, []);
 
     const setClassifier = async () => {
-        setClf(getKnnClassifier(trainingData))
+        const Xtrain = []
+        const ytrain = []
+        for(let i=0; i<trainingData.length; i++){
+            const td = trainingData[i]
+            ytrain[i] = td.shift()
+            Xtrain[i] = td
+        }
+        setClf(getCascadedClassifier(Xtrain, ytrain))
     }
 
     // const trainingData = await getTrainingData2(path)
@@ -134,19 +141,25 @@ export default function ClassifierComponent(props) {
     //     [0.10778825730085373, 0.3411574065685272, -0.02101042866706848],
     //     [0.1160956397652626, 0.2981507182121277, -0.023680033162236214]]
     // }]
-    let preProcessed = null
     if (handData) {
-        preProcessed = runPreprocessSteps(handData)
-        preProcessed ? preProcessed = buildFeatures([preProcessed])[0] : null
+        const landmarks = handData.length > 0 ? handData[0].landmarks : null
+        const fv = buildFeatureVector(landmarks)
+        const featureVector = fv[0]
+        const angles = fv[1]
+        return (
+            <div>
+                {featureVector ? clf.predict(featureVector, angles) : 'No landmark'}
+            </div>
+        );
+    }
+    else {
+        return (
+            <div>
+
+            </div>
+        )
     }
     // let angles = buildAngleFeatures([preProcessed])
     // console.log(angles)
     // preProcessed = flatten(preProcessed)
-
-
-    return (
-        <div>
-            {preProcessed ? clf.predict(preProcessed) : 'No landmark'}
-        </div>
-    );
 }
