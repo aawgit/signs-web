@@ -34,21 +34,11 @@ export default function VideoComp({ sendDataToParent }) {
   useEffect(() => runHandpose(), []);
 
   return (
-    <div 
-    // style={{
-    //   left: "1%",
-    //   top: "45px",
-    //   width: "50%",
-    //   height: "auto",
-    //   position: "absolute"
-    // }}
-    >
+    <div  >
       {cameraHidden === "hidden" && (
         <div className="Outer">
           <div className="Spacer"></div>
-          {/* <img className="Preview_image" src="/loading.gif" alt="loading" /> */}
           <LinearProgress />
-          {/* <div className="Spacer"></div> */}
         </div>
       )}
       <div style={{ visibility: cameraHidden }}>
