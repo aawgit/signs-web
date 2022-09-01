@@ -249,8 +249,7 @@ export class MultiLevelClassifier {
             const idx = oFilter.filter(predIndex)
             if (idx && idx > 0) {
                 const predSignL2 = classifyRuleBased(idx, angles)
-                const predSignL = LABEL_VS_INDEX[predSignL2].split(" ")[1]
-                return predSignL
+                return predSignL2
             }
             else return null
 

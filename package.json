@@ -1,5 +1,5 @@
 {
-  "name": "vto-hand",
+  "name": "fingerspelling",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -7,7 +7,6 @@
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@mediapipe/hands": "0.4.1635986972",
-    "@react-three/fiber": "7.0.25",
     "@tensorflow-models/handpose": "0.0.7",
     "@tensorflow/tfjs-backend-webgl": "3.13.0",
     "@tensorflow/tfjs-converter": "3.13.0",
@@ -18,8 +17,7 @@
     "react-dom": "17.0.2",
     "react-scripts": "4.0.3",
     "react-webcam": "6.0.0",
-    "tensorflow-load-csv": "^3.0.1",
-    "three": "0.136.0"
+    "tensorflow-load-csv": "^3.0.1"
   },
   "devDependencies": {
     "@types/react": "17.0.20",
