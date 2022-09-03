@@ -106,3 +106,27 @@ export const GAME_STATES = {
     won: 1,
     waiting: 3
 }
+
+export  const signsToPlay = [1, 
+    2, 
+    3, 
+    5, 
+    9, 
+    13, 
+    14, 
+    16, 
+    // 19, 
+    20, 
+    21, 
+    22, 
+    23, 
+    24, 
+    25, 
+    26, 
+    27, 
+    28, 
+    29, 
+    32, 
+    // 43, 
+    46, 
+    51]

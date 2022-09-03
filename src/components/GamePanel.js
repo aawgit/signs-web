@@ -31,9 +31,11 @@ export default function GamePanel(props) {
     const handData = props.handData
     const sendSignToParent = props.sendSignToParent
     const sendGameStatusToParent = props.sendGameStatusToParent
+    const masterGameStatus = props.gameStatus
+    const expectedSign = props.expectedSign
 
     let prediction
-    if (handData) {
+    if (handData && masterGameStatus!=GAME_STATES.won) {
         const landmarks = handData.length > 0 ? handData[0].landmarks : null
         const fv = buildFeatureVector(landmarks)
         const featureVector = fv[0]
@@ -45,19 +47,18 @@ export default function GamePanel(props) {
     }
 
     // TODO: Move this block to a game controller
-    const expectedSign = 1
-    expectedSign == prediction ? sendGameStatusToParent(GAME_STATES.won) : null
+    if(expectedSign && expectedSign == prediction) sendGameStatusToParent(GAME_STATES.won)
 
     return (
         <div>
             {/* TODO: Remove this div after testing */}
             <div style={{ fontSize: "100px" }} className="row">
-                {prediction ? LABEL_VS_INDEX[prediction].split(" ")[1] : ''}
+                {expectedSign? LABEL_VS_INDEX[expectedSign].split(" ")[1]: null}
             </div>
 
-            <div style={{ fontSize: "100px" }} className="row">
+            {/* <div style={{ fontSize: "100px" }} className="row">
                 <Validator expectedSign={expectedSign} currentSign={prediction} />
-            </div>
+            </div> */}
         </div>
     )
 }

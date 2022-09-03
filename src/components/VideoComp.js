@@ -70,8 +70,18 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
       image = capture()
       setPausedImage(image)
     }
-    videoP = <img src={image} />
+    // Dirty trick link this with main components state change
+    setTimeout(function () {
+      setPausedImage(null)
+  }, 3000);
+  //
+    videoP = <div style={{ visibility: cameraHidden, zIndex:2, position: "absolute", top: 0, left: 0 }}>
+    <img src={image} className="rounded"/>
+    </div>
   }
+  // else{
+  //   if (pausedImage) setPausedImage(null)
+  // }
 
   return (
     <div  >

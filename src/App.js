@@ -4,7 +4,7 @@ import "@tensorflow/tfjs-backend-webgl";
 // import "@mediapipe/hands";
 import GamePanel from "./components/GamePanel"
 import VideoComp from "./components/VideoComp";
-import { GAME_STATES } from "./utils/constants";
+import { GAME_STATES, signsToPlay } from "./utils/constants";
 // TODO:
 // Neglect non-signs
 //  - Max distance for KNN
@@ -22,6 +22,9 @@ export default function App() {
 
   const [gameStatus, setGameStatus] = useState()
 
+  const [expectedSign, setExpectedSign] = useState()
+
+  
   const sendDataToParent = (landmarks) => { // the callback. Use a better name
     setHandData(landmarks);
   };
@@ -35,9 +38,14 @@ export default function App() {
     setGameStatus(status);
     setTimeout(function () {
       setGameStatus(GAME_STATES.playing);
-  }, 5000);
+      const expectedSign = getRandomSign()
+      setExpectedSign(expectedSign)
+  }, 3000);
   };
-  // setExpectedSign(1)
+  
+  const getRandomSign = () => {
+    return signsToPlay[Math.floor(Math.random() * signsToPlay.length)];
+  }
 
   return (
     <div>
@@ -46,7 +54,11 @@ export default function App() {
           <div className="container">
             <div className="row">
               <div className="col-md-6" id="cnHolder">
-                <GamePanel handData={handData} sendSignToParent={sendSignToParent} sendGameStatusToParent={sendGameStatusToParent} />
+                <GamePanel handData={handData} 
+                gameStatus={gameStatus}
+                sendSignToParent={sendSignToParent} 
+                sendGameStatusToParent={sendGameStatusToParent} 
+                expectedSign={expectedSign? expectedSign: 1}/>
               </div>
               <div className="col-md-6">
                 <VideoComp sendDataToParent={sendDataToParent} gameStatus={gameStatus} />
