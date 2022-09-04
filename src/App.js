@@ -20,11 +20,13 @@ export default function App() {
   // const [expectedSign, setExpectedSign] = useState();
   const [currentSign, setCurrentSign] = useState();
 
-  const [gameStatus, setGameStatus] = useState()
+  const [gameStatus, setGameStatus] = useState(GAME_STATES.playing)
 
   const [expectedSign, setExpectedSign] = useState()
 
-  
+  const [signsToPlayRound, setSignsToPlayRound] = useState([...signsToPlay])
+
+
   const sendDataToParent = (landmarks) => { // the callback. Use a better name
     setHandData(landmarks);
   };
@@ -33,18 +35,28 @@ export default function App() {
     setCurrentSign(sign);
   };
 
+  const moveToNext = () => {
+    const expectedSign = getRandomSign()
+    setExpectedSign(expectedSign)
+    setGameStatus(GAME_STATES.playing);
+  }
+
   const sendGameStatusToParent = (status) => { // the callback. Use a better name
     console.log(`Sending game status ${status} to parent...`)
     setGameStatus(status);
-    setTimeout(function () {
-      setGameStatus(GAME_STATES.playing);
-      const expectedSign = getRandomSign()
-      setExpectedSign(expectedSign)
-  }, 3000);
+    if(status==GAME_STATES.won){
+      setTimeout(function () {
+        moveToNext()
+      }, 3000);
+    }
+    
   };
-  
+
   const getRandomSign = () => {
-    return signsToPlay[Math.floor(Math.random() * signsToPlay.length)];
+    if (signsToPlayRound.length == 0) setSignsToPlayRound(signsToPlay)
+    const indexOfSign = Math.floor(Math.random() * signsToPlayRound.length)
+    const sign = signsToPlayRound.splice(indexOfSign, 1);
+    return sign
   }
 
   return (
@@ -54,11 +66,12 @@ export default function App() {
           <div className="container">
             <div className="row">
               <div className="col-md-6" id="cnHolder">
-                <GamePanel handData={handData} 
-                gameStatus={gameStatus}
-                sendSignToParent={sendSignToParent} 
-                sendGameStatusToParent={sendGameStatusToParent} 
-                expectedSign={expectedSign? expectedSign: 1}/>
+                <GamePanel handData={handData}
+                  gameStatus={gameStatus}
+                  sendSignToParent={sendSignToParent}
+                  sendGameStatusToParent={sendGameStatusToParent}
+                  moveToNext={moveToNext}
+                  expectedSign={expectedSign ? expectedSign : 1} />
               </div>
               <div className="col-md-6">
                 <VideoComp sendDataToParent={sendDataToParent} gameStatus={gameStatus} />

@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import Button from "@material-ui/core/Button";
+import SimpleModal from './Modal';
 import { trainingData } from '../data/training.data';
 import {
     getMultiLevelClassifier, buildFeatureVector,
 } from '../service/classification.service';
 import Validator from './Validator';
 import { GAME_STATES, LABEL_VS_INDEX } from '../utils/constants';
+
+
 
 export default function GamePanel(props) {
     const [clf, setClf] = useState('');
@@ -33,9 +37,10 @@ export default function GamePanel(props) {
     const sendGameStatusToParent = props.sendGameStatusToParent
     const masterGameStatus = props.gameStatus
     const expectedSign = props.expectedSign
+    const moveToNext = props.moveToNext
 
     let prediction
-    if (handData && masterGameStatus!=GAME_STATES.won) {
+    if (handData && masterGameStatus != GAME_STATES.won) {
         const landmarks = handData.length > 0 ? handData[0].landmarks : null
         const fv = buildFeatureVector(landmarks)
         const featureVector = fv[0]
@@ -47,14 +52,23 @@ export default function GamePanel(props) {
     }
 
     // TODO: Move this block to a game controller
-    if(expectedSign && expectedSign == prediction) sendGameStatusToParent(GAME_STATES.won)
+    if (expectedSign && expectedSign == prediction) {
+        sendGameStatusToParent(GAME_STATES.won)
+    }
 
     return (
         <div>
             {/* TODO: Remove this div after testing */}
             <div style={{ fontSize: "100px" }} className="row">
-                {expectedSign? LABEL_VS_INDEX[expectedSign].split(" ")[1]: null}
+                {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
             </div>
+            {/* <button onClick={moveToNext}></button> */}
+            <Button color="primary"
+                onClick={moveToNext}
+                disabled={masterGameStatus != GAME_STATES.playing}
+                variant="contained"
+            >Skip</Button>
+            <SimpleModal show={masterGameStatus == GAME_STATES.won}></SimpleModal>
 
             {/* <div style={{ fontSize: "100px" }} className="row">
                 <Validator expectedSign={expectedSign} currentSign={prediction} />
