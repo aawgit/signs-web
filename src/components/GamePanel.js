@@ -57,17 +57,28 @@ export default function GamePanel(props) {
     }
 
     return (
-        <div>
+        <div >
             {/* TODO: Remove this div after testing */}
-            <div style={{ fontSize: "100px" }} className="row">
+            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+            
+            <img src={process.env.PUBLIC_URL+ expectedSign+".jpg"} className="rounded" />
+            {/* <div className="row"> */}
+            
+            <p style={{textAlign: "center", fontSize: "50px", position: "absolute", color: "#eb8c34"}}>
                 {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
+            </p>
+            
             </div>
-            {/* <button onClick={moveToNext}></button> */}
+           
+            <br></br>
+            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
             <Button color="primary"
                 onClick={moveToNext}
                 disabled={masterGameStatus != GAME_STATES.playing}
                 variant="contained"
             >Skip</Button>
+            </div>
+            
             <SimpleModal show={masterGameStatus == GAME_STATES.won}></SimpleModal>
 
             {/* <div style={{ fontSize: "100px" }} className="row">

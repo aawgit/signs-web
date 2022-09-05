@@ -65,7 +65,7 @@ export default function App() {
         <div className="album py-5 bg-light">
           <div className="container">
             <div className="row">
-              <div className="col-md-6" id="cnHolder">
+              <div className="col-md-5" id="cnHolder">
                 <GamePanel handData={handData}
                   gameStatus={gameStatus}
                   sendSignToParent={sendSignToParent}
@@ -73,7 +73,10 @@ export default function App() {
                   moveToNext={moveToNext}
                   expectedSign={expectedSign ? expectedSign : 1} />
               </div>
-              <div className="col-md-6">
+              <div className="col-md-2" id="cnHolder2">
+               some shit
+              </div>
+              <div className="col-md-5">
                 <VideoComp sendDataToParent={sendDataToParent} gameStatus={gameStatus} />
               </div>
             </div>
