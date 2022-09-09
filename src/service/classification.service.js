@@ -171,7 +171,6 @@ export class MultiLevelClassifier {
         for (let i = 0; i < rawOutput.length; i++) {
             sum = sum + rawOutput[i]
         }
-        console.log(`Sum ${sum}`)
         return rawOutput.map(val => val / sum)
     }
 
@@ -183,7 +182,6 @@ export class MultiLevelClassifier {
 
     getPredictionLR(rawOutput) {
         const min = Math.min(...rawOutput)
-        console.log(`Min ${min}`)
         const ro = rawOutput.map(e => e - min)
         const smPredLR = this.normalizedMax(ro)
         const highestConfPred = indexOfMax(smPredLR)
@@ -209,9 +207,7 @@ export class MultiLevelClassifier {
         const predIndexKNN = this.model.predict(featureVector)
 
         results.push(rfLabels[predRF[0]])
-        console.log(`RF ${predRF}`)
         results.push(lrLabels[predLR[0]])
-        console.log(`LR ${predLR}`)
         results.push(predIndexKNN)
         return getMode(results)
     }
@@ -220,7 +216,6 @@ export class MultiLevelClassifier {
         const rawPredLR = lrModel(dataset)
         const predLR = this.getPredictionRF(rawPredLR)
         if (predLR[1] > 0.67) {
-            console.log(predLR[1])
             return lrLabels[predLR[0]]
         }
         else if (predLR[1] < 0.2) { return null }
@@ -229,12 +224,10 @@ export class MultiLevelClassifier {
             const rawPredRF = rfModel(dataset)
             const predRF = this.getPredictionRF(rawPredRF)
             if (predRF[1] > 0.67) {
-                console.log(predRF[1])
                 return rfLabels[predRF[0]]
             }
             const predIndexKNN = this.model.predict(dataset)
             if (predRF[1] > 0.5 && predLR[1] > 0.5) {
-                console.log(predRF[1])
                 results.push(rfLabels[predRF[0]])
                 results.push(lrLabels[predLR[0]])
                 results.push(predIndexKNN)

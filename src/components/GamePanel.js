@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Button from "@material-ui/core/Button";
-import SimpleModal from './Modal';
 import { trainingData } from '../data/training.data';
 import {
     getMultiLevelClassifier, buildFeatureVector,
@@ -57,33 +55,16 @@ export default function GamePanel(props) {
     }
 
     return (
-        <div >
-            {/* TODO: Remove this div after testing */}
-            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-            
-            <img src={process.env.PUBLIC_URL+ expectedSign+".jpg"} className="rounded" />
-            {/* <div className="row"> */}
-            
-            <p style={{textAlign: "center", fontSize: "50px", position: "absolute", color: "#eb8c34"}}>
+        <div style={{alignContent: "center",  textAlign: "center"}}>
+                    <img src={process.env.PUBLIC_URL + expectedSign + ".jpg"} className="rounded" 
+                    style={{display: "block",
+                        marginLeft: "auto",
+                        marginRight: "auto"}}
+                    />
+            <p style={{textAlign: "center", fontSize: "50px", color: "#eb8c34"}}>
                 {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
             </p>
-            
-            </div>
-           
-            <br></br>
-            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-            <Button color="primary"
-                onClick={moveToNext}
-                disabled={masterGameStatus != GAME_STATES.playing}
-                variant="contained"
-            >Skip</Button>
-            </div>
-            
-            <SimpleModal show={masterGameStatus == GAME_STATES.won}></SimpleModal>
-
-            {/* <div style={{ fontSize: "100px" }} className="row">
-                <Validator expectedSign={expectedSign} currentSign={prediction} />
-            </div> */}
+            <button type='button' className='btn btn-outline-primary' onClick={moveToNext}>Skip</button>
         </div>
     )
 }

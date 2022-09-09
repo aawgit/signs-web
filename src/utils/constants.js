@@ -107,9 +107,10 @@ export const GAME_STATES = {
     waiting: 3
 }
 
-export  const signsToPlay = [1, 
+export  const signsToPlay = [
+    1, 
     2, 
-    3, 
+    // 3, 
     5, 
     // 9, 
     // 13, 
