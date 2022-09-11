@@ -5,11 +5,30 @@ import "@tensorflow/tfjs-backend-webgl";
 import GamePanel from "./components/GamePanel"
 import VideoComp from "./components/VideoComp";
 import { GAME_STATES, signsToPlay, LABEL_VS_INDEX } from "./utils/constants";
+
+// Import the functions you need from the SDKs you need
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+// // TODO: Add SDKs for Firebase products that you want to use
+// // https://firebase.google.com/docs/web/setup#available-libraries
+
+// // Your web app's Firebase configuration
+// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDqF1Kkzo8tbeV9zEMdMpyyNJO_A5em2iw",
+//   authDomain: "signsl.firebaseapp.com",
+//   projectId: "signsl",
+//   storageBucket: "signsl.appspot.com",
+//   messagingSenderId: "739991459341",
+//   appId: "1:739991459341:web:daf1c2b3be878720c0a744",
+//   measurementId: "G-PKSWR9LCH1"
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+
 // TODO:
-// Better layout
-//  - Fit the image and video to div sizes?
-// Attractive way of showing correct status
-//---------------Firebase release-------------
 // Data collection
 // --------------First "production" release ---------
 // Neglect non-signs

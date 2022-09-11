@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "signs-stg": "signsl",
+    "default": "signsl"
+  }
+}

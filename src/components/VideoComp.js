@@ -4,18 +4,49 @@ import Webcam from "react-webcam";
 import "@tensorflow/tfjs-backend-webgl";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { GAME_STATES } from "../utils/constants";
+import { cropAndSend } from "../service/trainer.service";
 
+const UPLOAD_INTERVAL = 2000
 
 export default function VideoComp({ sendDataToParent, gameStatus }) {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [pausedImage, setPausedImage] = useState();
   const webcamRef = useRef();
 
+  const uploadPoses = async (net) => {
+    if (
+        typeof webcamRef.current !== "undefined" &&
+        webcamRef.current !== null &&
+        webcamRef.current.video.readyState === 4
+    ) {
+        const lmEst = await net.estimateHands(webcamRef.current.video)
+        if (lmEst && lmEst.length > 0) {
+            const bbox = lmEst[0].boundingBox
+            if(bbox){
+            const crop = { 
+              x1: bbox.topLeft[0], 
+              y1: bbox.topLeft[1],
+              x2: bbox.bottomRight[0],
+              y2: bbox.bottomRight[1] }
+            captureAndSend(crop, webcamRef)
+            }
+        }
+    }
+    setTimeout(() => {
+        uploadPoses(net);
+    }, UPLOAD_INTERVAL);
+};
+
+const captureAndSend = (crop) => {
+  const image = webcamRef.current.getScreenshot();
+  cropAndSend(image, crop)
+}
+
   const capture = React.useCallback(
     () => {
       if (!pausedImage) {
-        const imageSrc = webcamRef.current.getScreenshot();
-        return imageSrc
+        const image = webcamRef.current.getScreenshot();
+        setPausedImage(image)
       }
     },
     [webcamRef]
@@ -35,12 +66,14 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
     }
     setTimeout(() => {
       detect(net);
-    }, 0);
+    }, 100);
   };
 
   const runHandpose = async () => {
     const net = await handpose.load();
     detect(net);
+    // TODO: Invoke below only after checking a flag
+    uploadPoses(net, webcamRef)
   };
 
   useEffect(() => runHandpose(), []);
@@ -65,8 +98,7 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
     let image
     if (pausedImage) image = pausedImage
     else {
-      image = capture()
-      setPausedImage(image)
+      capture()
     }
     // Dirty trick link this with main components state change
     setTimeout(function () {
@@ -76,17 +108,12 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
     videoP =
       <img src={image} className="rounded" style={{
         visibility: cameraHidden,
-        // zIndex:2, 
-        // position: "absolute", 
-        // top: 0, 
-        // left: 0, 
         bottom: 0,
-        // right: 0, 
         width: "100%"
       }} />
 
   }
-  
+
   let correctSign = <div></div>
   if (gameStatus == GAME_STATES.won) correctSign = <img src={process.env.PUBLIC_URL + "correct.png"}
     style={{
