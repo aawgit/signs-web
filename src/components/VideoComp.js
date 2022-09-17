@@ -8,39 +8,44 @@ import { cropAndSend } from "../service/trainer.service";
 
 const UPLOAD_INTERVAL = 2000
 
-export default function VideoComp({ sendDataToParent, gameStatus }) {
+// TODO: Replace dummy values with real
+const expected = 1
+const current = 1
+
+export default function VideoComp({ sendDataToParent, gameStatus}) {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [pausedImage, setPausedImage] = useState();
   const webcamRef = useRef();
 
   const uploadPoses = async (net) => {
     if (
-        typeof webcamRef.current !== "undefined" &&
-        webcamRef.current !== null &&
-        webcamRef.current.video.readyState === 4
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
     ) {
-        const lmEst = await net.estimateHands(webcamRef.current.video)
-        if (lmEst && lmEst.length > 0) {
-            const bbox = lmEst[0].boundingBox
-            if(bbox){
-            const crop = { 
-              x1: bbox.topLeft[0], 
-              y1: bbox.topLeft[1],
-              x2: bbox.bottomRight[0],
-              y2: bbox.bottomRight[1] }
-            captureAndSend(crop, webcamRef)
-            }
+      const lmEst = await net.estimateHands(webcamRef.current.video)
+      if (lmEst && lmEst.length > 0) {
+        const bbox = lmEst[0].boundingBox
+        if (bbox) {
+          const crop = {
+            x1: bbox.topLeft[0],
+            y1: bbox.topLeft[1],
+            x2: bbox.bottomRight[0],
+            y2: bbox.bottomRight[1]
+          }
+          captureAndSend(crop, expected, current)
         }
+      }
     }
     setTimeout(() => {
-        uploadPoses(net);
+      uploadPoses(net);
     }, UPLOAD_INTERVAL);
-};
+  };
 
-const captureAndSend = (crop) => {
-  const image = webcamRef.current.getScreenshot();
-  cropAndSend(image, crop)
-}
+  const captureAndSend = (crop, expected, current) => {
+    const image = webcamRef.current.getScreenshot();
+    cropAndSend(image, crop, expected, current)
+  }
 
   const capture = React.useCallback(
     () => {
@@ -82,7 +87,6 @@ const captureAndSend = (crop) => {
   if (gameStatus == GAME_STATES.won) widthx = 0
   const videoC = <div style={{ visibility: cameraHidden && gameStatus != GAME_STATES.won && gameStatus != undefined }}>
     <Webcam
-      // className="Webcam"
       ref={webcamRef}
       screenshotFormat="image/jpeg"
       style={{
@@ -108,17 +112,12 @@ const captureAndSend = (crop) => {
     videoP =
       <img src={image} className="rounded" style={{
         visibility: cameraHidden,
-        // zIndex:2, 
-        // position: "absolute", 
-        // top: 0, 
-        // left: 0, 
         bottom: 0,
-        // right: 0, 
         width: "100%"
       }} />
 
   }
-  
+
   let correctSign = <div></div>
   if (gameStatus == GAME_STATES.won) correctSign = <img src={process.env.PUBLIC_URL + "correct.png"}
     style={{
