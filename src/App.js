@@ -65,7 +65,6 @@ export default function App() {
   }
 
   const sendGameStatusToParent = (status) => { // the callback. Use a better name
-    console.log(`Sending game status ${status} to parent...`)
     setGameStatus(status);
     if (status == GAME_STATES.won) {
       setTimeout(function () {
@@ -106,7 +105,8 @@ export default function App() {
         </div>
         <div class="col-md-6">
           <div class="h-100 p-5 bg-light border rounded-3">
-            <VideoComp sendDataToParent={sendDataToParent} gameStatus={gameStatus} />
+            <VideoComp sendDataToParent={sendDataToParent} 
+            gameStatus={gameStatus} />
             </div>
         </div>
       </div>
