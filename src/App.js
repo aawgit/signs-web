@@ -72,6 +72,7 @@ export default function App() {
   }
 
   const sendGameStatusToParent = (status) => { // the callback. Use a better name
+    console.log(`Sending game status ${status} to parent...`)
     setGameStatus(status);
     if (status == GAME_STATES.won) {
       setTimeout(function () {
@@ -98,7 +99,7 @@ export default function App() {
           <span className="fs-4">Let's learn Sinhala Fingerspelling Alphabet</span>
         </a>
       </header>
-      
+
       <div className="row align-items-md-stretch">
         <div className="col-md-6">
           <div className="h-100 p-5 text-dark bg-light border rounded-3" >
@@ -112,9 +113,26 @@ export default function App() {
         </div>
         <div class="col-md-6">
           <div class="h-100 p-5 bg-light border rounded-3">
-            <VideoComp sendDataToParent={sendDataToParent} 
-            gameStatus={gameStatus} />
+            <VideoComp sendDataToParent={sendDataToParent}
+              gameStatus={gameStatus}
+              sendData={checked}
+            />
+            <div
+            // style={{ display: 'flex', justifyContent: 'flex-end' }}
+            >
+              <label className="form-check-label" htmlfor="flexCheckDefault" style={{ marginRight: "30px" }}>
+                <small><i>Send data to improve</i></small>
+              </label>
+              <input className="form-check-input" type="checkbox"
+                onChange={handleCheckboxClick} value="" id="flexCheckDefault"
+                checked={checked}
+              />
+
             </div>
+            <p><small><i>When enabled, a few images of your hand will be saved for further improving this service.
+        </i></small></p>
+
+          </div>
         </div>
       </div>
 
