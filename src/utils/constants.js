@@ -107,11 +107,11 @@ export const GAME_STATES = {
     waiting: 3
 }
 
-export  const signsToPlay = [
-    1, 
-    2, 
+export const signsToPlay = [
+    1,
+    2,
     // 3, 
-    5, 
+    5,
     // 9, 
     // 13, 
     // 14, 
@@ -132,3 +132,5 @@ export  const signsToPlay = [
     // 46, 
     // 51
 ]
+
+export const IMAGE_PAUSED_TIME = 3000

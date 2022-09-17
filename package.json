@@ -11,6 +11,8 @@
     "@tensorflow/tfjs-backend-webgl": "3.13.0",
     "@tensorflow/tfjs-converter": "3.13.0",
     "@tensorflow/tfjs-core": "3.13.0",
+    "axios": "^0.27.2",
+    "firebase": "^9.9.4",
     "mathjs": "^10.4.3",
     "ml-knn": "^3.0.0",
     "react": "17.0.2",
