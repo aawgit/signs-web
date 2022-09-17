@@ -1,10 +1,8 @@
 import { useState } from "react";
-import Button from "@material-ui/core/Button";
 import "@tensorflow/tfjs-backend-webgl";
-// import "@mediapipe/hands";
 import GamePanel from "./components/GamePanel"
 import VideoComp from "./components/VideoComp";
-import { GAME_STATES, signsToPlay, LABEL_VS_INDEX } from "./utils/constants";
+import { GAME_STATES, signsToPlay, IMAGE_PAUSED_TIME } from "./utils/constants";
 
 // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
@@ -72,7 +70,7 @@ export default function App() {
     if (status == GAME_STATES.won) {
       setTimeout(function () {
         moveToNext()
-      }, 3000);
+      }, IMAGE_PAUSED_TIME);
     }
 
   };

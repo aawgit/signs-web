@@ -1,6 +1,8 @@
 import axios from "axios"
-const UPLOAD_INTERVAL = 1000
-BE_BASE_URL = ""
+
+const BE_BASE_URL = "http://localhost:5000"
+
+
 export function cropAndSend(datas, crop) {
     var img = document.createElement('img');
     img.onload = function () {
@@ -46,20 +48,20 @@ const cropImage = (image, crop) => {
 
 const uploadCroppedImage = (dataURI, expected, detected) => {
     console.log(`Sending data to back end ${dataURI}`)
-    let formData = new FormData();
-
-    formData.append("expected", expected);
-    formData.append("detected", detected);
-    formData.append("file", dataURI);
-   
+    const data = {
+        expected, current: detected, file: dataURI
+    }
     axios
-      .post(`${BE_BASE_URL}/api/pose-data`, formData, {
-        headers: {
-        //   "x-access-token": this.state.user.token,
-        //   "orgid": this.state.user.orgId,
-        }
-      })
-      .then(res => {})
-      .catch(err => {});
+        .post(`${BE_BASE_URL}/api/image/v2`, data, {
+            headers: {
+                //   "x-access-token": this.state.user.token,
+                //   "orgid": this.state.user.orgId,
+            }
+        })
+        .then(res => { })
+        .catch(err => {
+            // TODO: Remove
+            console.log(err)
+         });
 }
 

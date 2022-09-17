@@ -108,12 +108,17 @@ const captureAndSend = (crop) => {
     videoP =
       <img src={image} className="rounded" style={{
         visibility: cameraHidden,
+        // zIndex:2, 
+        // position: "absolute", 
+        // top: 0, 
+        // left: 0, 
         bottom: 0,
+        // right: 0, 
         width: "100%"
       }} />
 
   }
-
+  
   let correctSign = <div></div>
   if (gameStatus == GAME_STATES.won) correctSign = <img src={process.env.PUBLIC_URL + "correct.png"}
     style={{
