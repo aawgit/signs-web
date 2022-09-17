@@ -49,6 +49,13 @@ export default function App() {
 
   const [signsToPlayRound, setSignsToPlayRound] = useState([...signsToPlay])
 
+  const [checked, setChecked] = useState(true)
+
+  const handleCheckboxClick = (evt) => {
+    console.log(`Handling change...`)
+    const newChecked = !checked
+    setChecked(newChecked)
+  }
 
   const sendDataToParent = (landmarks) => { // the callback. Use a better name
     setHandData(landmarks);
@@ -89,10 +96,10 @@ export default function App() {
     <div className="container py-4">
       <header className="pb-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-          <span class="fs-4">Let's learn Sinhala Fingerspelling Alphabet</span>
+          <span className="fs-4">Let's learn Sinhala Fingerspelling Alphabet</span>
         </a>
       </header>
-
+      
       <div className="row align-items-md-stretch">
         <div className="col-md-6">
           <div className="h-100 p-5 text-dark bg-light border rounded-3" >
@@ -102,12 +109,26 @@ export default function App() {
               sendGameStatusToParent={sendGameStatusToParent}
               moveToNext={moveToNext}
               expectedSign={expectedSignForUI} />
-             </div>
+          </div>
         </div>
         <div class="col-md-6">
           <div class="h-100 p-5 bg-light border rounded-3">
             <VideoComp sendDataToParent={sendDataToParent} gameStatus={gameStatus} />
-            </div>
+            <div 
+            // style={{ display: 'flex', justifyContent: 'flex-end' }}
+            >
+        <label className="form-check-label" htmlfor="flexCheckDefault" style={{ marginRight: "30px" }}>
+          <small><i>Send data to improve</i></small>
+        </label>
+        <input className="form-check-input" type="checkbox"
+          onChange={handleCheckboxClick} value="" id="flexCheckDefault"
+          checked={checked}
+        />
+        
+      </div>
+      <p><small><i>When enabled, a few images of your hand will be saved for further improving this service. </i></small></p>
+        
+          </div>
         </div>
       </div>
 
