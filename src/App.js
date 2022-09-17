@@ -65,7 +65,6 @@ export default function App() {
   }
 
   const sendGameStatusToParent = (status) => { // the callback. Use a better name
-    console.log(`Sending game status ${status} to parent...`)
     setGameStatus(status);
     if (status == GAME_STATES.won) {
       setTimeout(function () {

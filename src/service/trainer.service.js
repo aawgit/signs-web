@@ -1,6 +1,7 @@
 import axios from "axios"
 
-const BE_BASE_URL = "http://localhost:5000"
+// const BE_BASE_URL = "http://localhost:5000"
+const BE_BASE_URL = "https://aqueous-peak-24042.herokuapp.com"
 
 
 export function cropAndSend(datas, crop) {
@@ -47,7 +48,6 @@ const cropImage = (image, crop) => {
 }
 
 const uploadCroppedImage = (dataURI, expected, detected) => {
-    console.log(`Sending data to back end ${dataURI}`)
     const data = {
         expected, current: detected, file: dataURI
     }
@@ -58,10 +58,5 @@ const uploadCroppedImage = (dataURI, expected, detected) => {
                 //   "orgid": this.state.user.orgId,
             }
         })
-        .then(res => { })
-        .catch(err => {
-            // TODO: Remove
-            console.log(err)
-         });
 }
 
