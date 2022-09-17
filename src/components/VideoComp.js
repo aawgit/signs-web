@@ -8,7 +8,11 @@ import { cropAndSend } from "../service/trainer.service";
 
 const UPLOAD_INTERVAL = 2000
 
-export default function VideoComp({ sendDataToParent, gameStatus }) {
+// TODO: Replace dummy values with real
+const expected = 1
+const current = 1
+
+export default function VideoComp({ sendDataToParent, gameStatus}) {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [pausedImage, setPausedImage] = useState();
   const webcamRef = useRef();
@@ -29,7 +33,7 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
             x2: bbox.bottomRight[0],
             y2: bbox.bottomRight[1]
           }
-          captureAndSend(crop, webcamRef)
+          captureAndSend(crop, expected, current)
         }
       }
     }
@@ -38,9 +42,9 @@ export default function VideoComp({ sendDataToParent, gameStatus }) {
     }, UPLOAD_INTERVAL);
   };
 
-  const captureAndSend = (crop) => {
+  const captureAndSend = (crop, expected, current) => {
     const image = webcamRef.current.getScreenshot();
-    cropAndSend(image, crop)
+    cropAndSend(image, crop, expected, current)
   }
 
   const capture = React.useCallback(

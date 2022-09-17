@@ -4,11 +4,11 @@ import axios from "axios"
 const BE_BASE_URL = "https://aqueous-peak-24042.herokuapp.com"
 
 
-export function cropAndSend(datas, crop) {
+export function cropAndSend(datas, crop, expected, detected) {
     var img = document.createElement('img');
     img.onload = function () {
         const dataURI = cropImage(img, crop)
-        uploadCroppedImage(dataURI)
+        uploadCroppedImage(dataURI, expected, detected)
     };
     img.src = datas;
 }
