@@ -49,6 +49,12 @@ export default function App() {
 
   const [signsToPlayRound, setSignsToPlayRound] = useState([...signsToPlay])
 
+  const [sendChecked, setSendChecked] = useState(true)
+
+  const handleCheckboxClick = (evt) => {
+    const newChecked = !sendChecked
+    setSendChecked(newChecked)
+  }
 
   const sendDataToParent = (landmarks) => { // the callback. Use a better name
     setHandData(landmarks);
@@ -65,6 +71,7 @@ export default function App() {
   }
 
   const sendGameStatusToParent = (status) => { // the callback. Use a better name
+    console.log(`Sending game status ${status} to parent...`)
     setGameStatus(status);
     if (status == GAME_STATES.won) {
       setTimeout(function () {
@@ -87,12 +94,13 @@ export default function App() {
 
     <div className="container py-4">
       <header className="pb-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-          <span class="fs-4">Let's learn Sinhala Fingerspelling Alphabet</span>
+        <a href="/" className="d-flex align-items-center text-dark text-decoration-none">
+          <span className="fs-4">Let's learn Sinhala Fingerspelling Alphabet</span>
         </a>
       </header>
 
       <div className="row align-items-md-stretch">
+        <div style={{display: "flex", justifyContent: "center"}}>Try to do the sign on the left</div>
         <div className="col-md-6">
           <div className="h-100 p-5 text-dark bg-light border rounded-3" >
             <GamePanel handData={handData}
@@ -101,18 +109,32 @@ export default function App() {
               sendGameStatusToParent={sendGameStatusToParent}
               moveToNext={moveToNext}
               expectedSign={expectedSignForUI} />
-             </div>
+          </div>
         </div>
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-light border rounded-3">
-            <VideoComp sendDataToParent={sendDataToParent} 
-            gameStatus={gameStatus} />
+        <div className="col-md-6">
+          <div className="h-100 p-5 bg-light border rounded-3">
+            <VideoComp sendDataToParent={sendDataToParent}
+              gameStatus={gameStatus}
+              sendData={sendChecked}
+            />
+            <div>
+              <label className="form-check-label" htmlFor="flexCheckDefault" style={{ marginRight: "30px" }}>
+                <small>Send data to improve</small>
+              </label>
+              <input className="form-check-input" type="checkbox"
+                onChange={handleCheckboxClick} value="" id="flexCheckDefault"
+                checked={sendChecked}
+              />
+
             </div>
+            <p><small><i>When enabled, a few images of your hand will be saved for further improving this service.
+        </i></small></p>
+          </div>
         </div>
       </div>
 
-      <footer class="pt-3 mt-4 text-muted border-top">
-        &copy; 2022
+      <footer className="pt-3 mt-4 text-muted border-top">
+        1.0.0-alpha.1
       </footer>
     </div>
 

@@ -3,7 +3,6 @@ import { trainingData } from '../data/training.data';
 import {
     getMultiLevelClassifier, buildFeatureVector,
 } from '../service/classification.service';
-import Validator from './Validator';
 import { GAME_STATES, LABEL_VS_INDEX } from '../utils/constants';
 
 
