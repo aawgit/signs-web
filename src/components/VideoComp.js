@@ -12,16 +12,20 @@ const UPLOAD_INTERVAL = 2000
 const expected = 1
 const current = 1
 
-export default function VideoComp({ sendDataToParent, gameStatus}) {
+let SEND_FLAG = true
+
+export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [pausedImage, setPausedImage] = useState();
   const webcamRef = useRef();
 
+  // TODO: Refactor and move these 2 functions to a seperate file
   const uploadPoses = async (net) => {
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
       webcamRef.current.video.readyState === 4
+      && SEND_FLAG
     ) {
       const lmEst = await net.estimateHands(webcamRef.current.video)
       if (lmEst && lmEst.length > 0) {
@@ -39,6 +43,7 @@ export default function VideoComp({ sendDataToParent, gameStatus}) {
     }
     setTimeout(() => {
       uploadPoses(net);
+
     }, UPLOAD_INTERVAL);
   };
 
@@ -46,7 +51,8 @@ export default function VideoComp({ sendDataToParent, gameStatus}) {
     const image = webcamRef.current.getScreenshot();
     cropAndSend(image, crop, expected, current)
   }
-
+  //
+  
   const capture = React.useCallback(
     () => {
       if (!pausedImage) {
@@ -77,11 +83,16 @@ export default function VideoComp({ sendDataToParent, gameStatus}) {
   const runHandpose = async () => {
     const net = await handpose.load();
     detect(net);
-    // TODO: Invoke below only after checking a flag
-    uploadPoses(net, webcamRef)
+    uploadPoses(net)
   };
 
   useEffect(() => runHandpose(), []);
+
+  useEffect(() => ()=>{
+    // This should be the other way around, but this works. Don't know how. Shame!
+    sendData? SEND_FLAG=false: SEND_FLAG=true
+  }, 
+    [sendData]);
 
   let widthx = "100%"
   if (gameStatus == GAME_STATES.won) widthx = 0
