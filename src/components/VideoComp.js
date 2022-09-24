@@ -95,8 +95,8 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
     [sendData]);
 
   let widthx = "100%"
-  if (gameStatus == GAME_STATES.won) widthx = 0
-  const videoC = <div style={{ visibility: cameraHidden && gameStatus != GAME_STATES.won && gameStatus != undefined }}>
+  if ((gameStatus == GAME_STATES.won) || cameraHidden=='hidden') widthx = 0
+  const videoC = <div style={{ visibility: gameStatus != undefined }}>
     <Webcam
       ref={webcamRef}
       screenshotFormat="image/jpeg"
@@ -142,6 +142,7 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
       {cameraHidden === "hidden" && (
         <div className="Outer">
           <div className="Spacer"></div>
+          <p>Loading. Please wait.</p>
           <LinearProgress />
         </div>
       )}
