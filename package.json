@@ -18,8 +18,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "4.0.3",
-    "react-webcam": "6.0.0",
-    "tensorflow-load-csv": "^3.0.1"
+    "react-webcam": "6.0.0"
   },
   "devDependencies": {
     "@types/react": "17.0.20",
