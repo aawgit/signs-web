@@ -17,5 +17,5 @@ To see how this works, check out the demo at https://signsl.web.app/
 There are 3 ways you can contribute
 1. Select an open issue and fix it
 2. Find issues and report them
-3. Improving the documentation
+3. Improve the documentation
 
