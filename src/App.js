@@ -149,7 +149,7 @@ export default function App() {
       </div>
 
       <footer className="pt-3 mt-4 text-muted border-top">
-        1.0.0-alpha.2
+        1.0.0-alpha.3
       </footer>
     </div>
 
