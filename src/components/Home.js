@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "@tensorflow/tfjs-backend-webgl";
 import GamePanel from "../components/GamePanel"
 import VideoComp from "../components/VideoComp";
@@ -52,6 +52,20 @@ export default function Home() {
 
   const [sendChecked, setSendChecked] = useState(true)
 
+  const [width, setWidth] = useState(Number(window.innerWidth));
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
+  }, []);
+
+  const isMobile = width <= 768;
+
   const handleCheckboxClick = (evt) => {
     const newChecked = !sendChecked
     setSendChecked(newChecked)
@@ -90,6 +104,7 @@ export default function Home() {
   }
   let expectedSignForUI = 1
   expectedSign ? expectedSignForUI = expectedSign : null
+  if (isMobile) return (<div>Sorry, this doesn't work on mobiles phone screens yet. Please try on a laptop or desktop computer.</div>)
   return (
     <div className="container py-4">
       <div className="row align-items-md-stretch">

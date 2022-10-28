@@ -8,6 +8,10 @@ Pose estimation and classification happens in the browser. Some images of the cr
 To see how this works, check out the demo at https://signsl.web.app/ 
 
 ## Installation
+
+### Prerequisites
+- NodeJS v16.14.0
+
 ### Install dependencies
 - npm i
 ### Start the service
