@@ -1,36 +1,35 @@
 export const getMode = (arr) => {
-  var map = {};
-  for (var i = 0; i < arr.length; i++) {
-    if (map[arr[i]] === undefined) {
-      map[arr[i]] = 0;
+  const map = {};
+  arr.forEach((item) => {
+    if (map[item] === undefined) {
+      map[item] = 1;
+    } else {
+      map[item] += 1;
     }
-    map[arr[i]] += 1;
-  }
-  var greatestFreq = 0;
-  var mode;
-  for (var prop in map) {
+  });
+
+  let greatestFreq = 0;
+  let mode;
+  for (const prop in map) {
     if (map[prop] > greatestFreq) {
       greatestFreq = map[prop];
       mode = prop;
     }
   }
   return mode;
-
-}
+};
 
 export class OutputFilter {
-  constructor(buffer_size = 15) {
-    this.buffer = Array.apply(null, Array(buffer_size)).map(function () { return 0 });
+  constructor(bufferSize = 15) {
+    this.buffer = new Array(bufferSize).fill(0);
   }
 
   filter(sign) {
-    var p, sign;
     this.buffer.shift();
     this.buffer.push(sign);
-    p = getMode(this.buffer)
-    return p;
-  }
 
+    return getMode(this.buffer);
+  }
 }
 
 export function indexOfMax(arr) {
@@ -38,15 +37,15 @@ export function indexOfMax(arr) {
     return -1;
   }
 
-  var max = arr[0];
-  var maxIndex = 0;
+  let max = -Infinity;
+  let maxIndex = 0;
 
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      maxIndex = i;
-      max = arr[i];
+  arr.forEach((item, index) => {
+    if (item > max) {
+      maxIndex = index;
+      max = item;
     }
-  }
+  });
 
   return [maxIndex, max];
 }
