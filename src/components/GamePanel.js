@@ -1,69 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { trainingData } from '../data/training.data';
+import React, { useState, useEffect } from "react";
+import { trainingData } from "../data/training.data";
 import {
-    getMultiLevelClassifier, buildFeatureVector,
-} from '../service/classification.service';
-import { GAME_STATES, LABEL_VS_INDEX } from '../utils/constants';
+  getMultiLevelClassifier,
+  buildFeatureVector,
+} from "../service/classification.service";
+import { GAME_STATES, LABEL_VS_INDEX } from "../utils/constants";
 
+const GamePanel = ({
+  handData,
+  sendSignToParent,
+  sendGameStatusToParent,
+  gameStatus: masterGameStatus,
+  expectedSign,
+  moveToNext,
+}) => {
+  const [clf, setClf] = useState("");
 
+  useEffect(() => {
+    const Xtrain = [];
+    const ytrain = [];
 
-export default function GamePanel(props) {
-    const [clf, setClf] = useState('');
+    trainingData.forEach((td, index) => {
+      const [y, ...x] = td;
 
-    useEffect(() => {
-        // You need to restrict it at some point
-        // This is just dummy code and should be replaced by actual
-        if (!clf) {
-            setClassifier();
-        }
-    }, []);
+      ytrain.push(y);
+      Xtrain.push(x);
+    });
 
-    const setClassifier = async () => {
-        const Xtrain = []
-        const ytrain = []
-        for (let i = 0; i < trainingData.length; i++) {
-            const td = trainingData[i]
-            ytrain[i] = td.shift()
-            Xtrain[i] = td
-        }
-        setClf(getMultiLevelClassifier(Xtrain, ytrain))
+    setClf(getMultiLevelClassifier(Xtrain, ytrain));
+  }, []);
+
+  let prediction;
+  if (handData && masterGameStatus !== GAME_STATES.won) {
+    const landmarks = handData[0]?.landmarks ?? null;
+
+    const [featureVector, angles] = buildFeatureVector(landmarks);
+
+    if (featureVector) {
+      prediction = clf.predict(featureVector, angles);
+      sendSignToParent(prediction);
     }
+  }
 
-    const handData = props.handData
-    const sendSignToParent = props.sendSignToParent
-    const sendGameStatusToParent = props.sendGameStatusToParent
-    const masterGameStatus = props.gameStatus
-    const expectedSign = props.expectedSign
-    const moveToNext = props.moveToNext
+  // TODO: Move this block to a game controller
+  if (expectedSign && expectedSign === prediction) {
+    sendGameStatusToParent(GAME_STATES.won);
+  }
 
-    let prediction
-    if (handData && masterGameStatus != GAME_STATES.won) {
-        const landmarks = handData.length > 0 ? handData[0].landmarks : null
-        const fv = buildFeatureVector(landmarks)
-        const featureVector = fv[0]
-        const angles = fv[1]
-        if (featureVector) {
-            prediction = clf.predict(featureVector, angles)
-            sendSignToParent(prediction)
-        }
-    }
+  return (
+    <div style={{ alignContent: "center", textAlign: "center" }}>
+      <img
+        src={`${process.env.PUBLIC_URL}${expectedSign}.jpg`}
+        className="rounded"
+        style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}
+        alt="Expected sign"
+      />
+      <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
+        {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
+      </p>
+      <button
+        type="button"
+        className="btn btn-outline-primary"
+        onClick={moveToNext}
+      >
+        Skip
+      </button>
+    </div>
+  );
+};
 
-    // TODO: Move this block to a game controller
-    if (expectedSign && expectedSign == prediction) {
-        sendGameStatusToParent(GAME_STATES.won)
-    }
-
-    return (
-        <div style={{alignContent: "center",  textAlign: "center"}}>
-                    <img src={process.env.PUBLIC_URL + expectedSign + ".jpg"} className="rounded" 
-                    style={{display: "block",
-                        marginLeft: "auto",
-                        marginRight: "auto"}}
-                    />
-            <p style={{textAlign: "center", fontSize: "50px", color: "#eb8c34"}}>
-                {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
-            </p>
-            <button type='button' className='btn btn-outline-primary' onClick={moveToNext}>Skip</button>
-        </div>
-    )
-}
+export default GamePanel;

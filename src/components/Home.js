@@ -1,9 +1,12 @@
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "@tensorflow/tfjs-backend-webgl";
-import GamePanel from "../components/GamePanel"
-import VideoComp from "../components/VideoComp";
-import { GAME_STATES, signsToPlay, IMAGE_PAUSED_TIME } from "../utils/constants";
+import GamePanel from "./GamePanel";
+import VideoComp from "./VideoComp";
+import {
+  GAME_STATES,
+  signsToPlay,
+  IMAGE_PAUSED_TIME,
+} from "../utils/constants";
 
 // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
@@ -39,112 +42,133 @@ import { GAME_STATES, signsToPlay, IMAGE_PAUSED_TIME } from "../utils/constants"
 //
 // Performance
 //  - Remove unnecessary steps
-export default function Home() {
+
+const getRandomizedSignsToPlay = () =>
+  [...signsToPlay].sort(() => (Math.random() > 0.5 ? 1 : -1));
+
+const Home = () => {
   const [handData, setHandData] = useState();
   // const [expectedSign, setExpectedSign] = useState();
   const [currentSign, setCurrentSign] = useState();
+  const [gameStatus, setGameStatus] = useState(GAME_STATES.playing);
+  const [expectedSign, setExpectedSign] = useState(1);
+  const randomizedSignsRef = useRef([]);
+  const [sendChecked, setSendChecked] = useState(true);
 
-  const [gameStatus, setGameStatus] = useState(GAME_STATES.playing)
+  const getNextSign = useCallback(() => {
+    if (!randomizedSignsRef.current.length)
+      randomizedSignsRef.current = getRandomizedSignsToPlay();
 
-  const [expectedSign, setExpectedSign] = useState(1)
-
-  const [signsToPlayRound, setSignsToPlayRound] = useState([...signsToPlay])
-
-  const [sendChecked, setSendChecked] = useState(true)
-
-  const [width, setWidth] = useState(Number(window.innerWidth));
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    }
+    return randomizedSignsRef.current.shift();
   }, []);
 
-  const isMobile = width <= 768;
+  const isMobile = window.innerWidth <= 768;
 
-  const handleCheckboxClick = (evt) => {
-    const newChecked = !sendChecked
-    setSendChecked(newChecked)
-  }
+  const handleCheckboxClick = useCallback(() => {
+    setSendChecked((checked) => !checked);
+  }, []);
 
-  const sendDataToParent = (landmarks) => { // the callback. Use a better name
+  const sendDataToParent = (landmarks) => {
+    // the callback. Use a better name
     setHandData(landmarks);
   };
 
-  const sendSignToParent = (sign) => { // the callback. Use a better name
+  const sendSignToParent = (sign) => {
+    // the callback. Use a better name
     setCurrentSign(sign);
   };
 
-  const moveToNext = () => {
-    const expectedSign = getRandomSign()
-    setExpectedSign(expectedSign)
+  const moveToNext = useCallback(() => {
+    setExpectedSign(getNextSign);
     setGameStatus(GAME_STATES.playing);
-  }
+  }, [getNextSign]);
 
-  const sendGameStatusToParent = (status) => { // the callback. Use a better name
+  const sendGameStatusToParent = (status) => {
+    // the callback. Use a better name
     setGameStatus(status);
-    if (status == GAME_STATES.won) {
-      setTimeout(function () {
-        moveToNext()
-      }, IMAGE_PAUSED_TIME);
-    }
-
   };
 
-  const getRandomSign = () => {
-    if (signsToPlayRound.length == 1) setSignsToPlayRound([...signsToPlay])
-    const indexOfSign = Math.floor(Math.random() * signsToPlayRound.length)
-    const sign = signsToPlayRound.splice(indexOfSign, 1);
-    if (!sign) return 1
-    return sign
+  // Hook responsible for initiating next game after a game is won
+  useEffect(() => {
+    if (gameStatus !== GAME_STATES.won) return undefined;
+
+    const timeout = setTimeout(() => {
+      moveToNext();
+    }, IMAGE_PAUSED_TIME);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [gameStatus, moveToNext]);
+
+  let expectedSignForUI = 1;
+  if (expectedSign) {
+    expectedSignForUI = expectedSign;
   }
-  let expectedSignForUI = 1
-  expectedSign ? expectedSignForUI = expectedSign : null
-  if (isMobile) return (<div>Sorry, this doesn't work on mobiles phone screens yet. Please try on a laptop or desktop computer.</div>)
+  if (isMobile)
+    return (
+      <div>
+        Sorry, this doesn&apos;t work on mobiles phone screens yet. Please try
+        on a laptop or desktop computer.
+      </div>
+    );
   return (
     <div className="container py-4">
       <div className="row align-items-md-stretch">
-        <div style={{ display: "flex", justifyContent: "center" }}>Try to do the sign on the left</div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          Try to do the sign on the left
+        </div>
         <div className="col-md-6">
-          <div className="h-100 p-5 text-dark bg-light border rounded-3" >
-            <GamePanel handData={handData}
+          <div className="h-100 p-5 text-dark bg-light border rounded-3">
+            <GamePanel
+              handData={handData}
               gameStatus={gameStatus}
               sendSignToParent={sendSignToParent}
               sendGameStatusToParent={sendGameStatusToParent}
               moveToNext={moveToNext}
-              expectedSign={expectedSignForUI} />
+              expectedSign={expectedSignForUI}
+            />
           </div>
         </div>
         <div className="col-md-6">
           <div className="h-100 p-5 bg-light border rounded-3">
-            <VideoComp sendDataToParent={sendDataToParent}
+            <VideoComp
+              sendDataToParent={sendDataToParent}
               gameStatus={gameStatus}
               sendData={sendChecked}
             />
             <div>
-              <label className="form-check-label" htmlFor="flexCheckDefault" style={{ marginRight: "30px" }}>
+              <label
+                className="form-check-label"
+                htmlFor="flexCheckDefault"
+                style={{ marginRight: "30px" }}
+              >
                 <small>Send data to improve</small>
               </label>
-              <input className="form-check-input" type="checkbox"
-                onChange={handleCheckboxClick} value="" id="flexCheckDefault"
+              <input
+                className="form-check-input"
+                type="checkbox"
+                onChange={handleCheckboxClick}
+                value=""
+                id="flexCheckDefault"
                 checked={sendChecked}
               />
-
             </div>
-            <p><small><i>When enabled, a few images of your hand will be saved for further improving this service.
-            </i></small></p>
+            <p>
+              <small>
+                <i>
+                  When enabled, a few images of your hand will be saved for
+                  further improving this service.
+                </i>
+              </small>
+            </p>
           </div>
         </div>
       </div>
 
-      <footer className="pt-3 mt-4 text-muted border-top">
-        1.0.0-alpha.3
-      </footer>
+      <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.3</footer>
     </div>
-
   );
-}
+};
+
+export default Home;
