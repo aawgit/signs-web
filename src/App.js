@@ -1,12 +1,13 @@
 import React from "react";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
+import MuiThemeProvider from "./components/MuiThemeProvider";
 import Home from "./components/Home";
 import About from "./components/About";
 import NavBarComp from "./components/NavBarComp";
 
 const App = () => {
   return (
-    <div>
+    <MuiThemeProvider>
       <BrowserRouter>
         <NavBarComp />
         <Switch>
@@ -14,7 +15,7 @@ const App = () => {
           <Route exact path="/about" component={About} />
         </Switch>
       </BrowserRouter>
-    </div>
+    </MuiThemeProvider>
   );
 };
 
