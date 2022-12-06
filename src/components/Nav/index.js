@@ -13,7 +13,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import NavButton from "../NavButton";
+import NavButton from "./NavButton";
 
 const DRAWER_WIDTH = 240;
 
