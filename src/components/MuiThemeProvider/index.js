@@ -1,10 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-
-const theme = createTheme({
-  components: {},
-});
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 
 const MuiThemeProvider = ({ children }) => (
   <ThemeProvider theme={theme}>{children}</ThemeProvider>
