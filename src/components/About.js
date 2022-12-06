@@ -1,8 +1,9 @@
 import React from "react";
+import { Box } from "@mui/material";
 
 const About = () => {
   return (
-    <>
+    <Box marginTop={4}>
       <h2>Developed by</h2>
       <p>
         <a href="https://lk.linkedin.com/in/akalanka-weerasooriya-7812b3171">
@@ -36,7 +37,7 @@ const About = () => {
       <br /> <br />
       <h2>Contact</h2>
       akalankaweerasooriya@gmail.com
-    </>
+    </Box>
   );
 };
 

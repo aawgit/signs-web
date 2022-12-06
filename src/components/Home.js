@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Card, CardContent, Grid, Box } from "@mui/material";
 import "@tensorflow/tfjs-backend-webgl";
 import GamePanel from "./GamePanel";
 import VideoComp from "./VideoComp";
@@ -62,8 +63,6 @@ const Home = () => {
     return randomizedSignsRef.current.shift();
   }, []);
 
-  const isMobile = window.innerWidth <= 768;
-
   const handleCheckboxClick = useCallback(() => {
     setSendChecked((checked) => !checked);
   }, []);
@@ -105,21 +104,12 @@ const Home = () => {
   if (expectedSign) {
     expectedSignForUI = expectedSign;
   }
-  if (isMobile)
-    return (
-      <div>
-        Sorry, this doesn&apos;t work on mobiles phone screens yet. Please try
-        on a laptop or desktop computer.
-      </div>
-    );
+
   return (
     <>
-      <div className="row align-items-md-stretch">
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          Try to do the sign on the left
-        </div>
-        <div className="col-md-6">
-          <div className="h-100 p-5 text-dark bg-light border rounded-3">
+      <Box sx={{ flexGrow: 1 }} margin={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
             <GamePanel
               handData={handData}
               gameStatus={gameStatus}
@@ -128,43 +118,45 @@ const Home = () => {
               moveToNext={moveToNext}
               expectedSign={expectedSignForUI}
             />
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="h-100 p-5 bg-light border rounded-3">
-            <VideoComp
-              sendDataToParent={sendDataToParent}
-              gameStatus={gameStatus}
-              sendData={sendChecked}
-            />
-            <div>
-              <label
-                className="form-check-label"
-                htmlFor="flexCheckDefault"
-                style={{ marginRight: "30px" }}
-              >
-                <small>Send data to improve</small>
-              </label>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                onChange={handleCheckboxClick}
-                value=""
-                id="flexCheckDefault"
-                checked={sendChecked}
-              />
-            </div>
-            <p>
-              <small>
-                <i>
-                  When enabled, a few images of your hand will be saved for
-                  further improving this service.
-                </i>
-              </small>
-            </p>
-          </div>
-        </div>
-      </div>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card sx={{ minWidth: 275 }}>
+              <CardContent>
+                <VideoComp
+                  sendDataToParent={sendDataToParent}
+                  gameStatus={gameStatus}
+                  sendData={sendChecked}
+                />
+                <div>
+                  <label
+                    className="form-check-label"
+                    htmlFor="flexCheckDefault"
+                    style={{ marginRight: "30px" }}
+                  >
+                    <small>Send data to improve</small>
+                  </label>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={handleCheckboxClick}
+                    value=""
+                    id="flexCheckDefault"
+                    checked={sendChecked}
+                  />
+                </div>
+                <p>
+                  <small>
+                    <i>
+                      When enabled, a few images of your hand will be saved for
+                      further improving this service.
+                    </i>
+                  </small>
+                </p>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Box>
 
       <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.3</footer>
     </>
