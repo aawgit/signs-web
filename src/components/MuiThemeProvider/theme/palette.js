@@ -1,5 +1,5 @@
 const palette = {
-  primary: { main: "#fff176" },
+  primary: { main: "#fff59d" },
 };
 
 export default palette;
