@@ -2,7 +2,7 @@ import React from "react";
 
 const About = () => {
   return (
-    <div className="container py-4">
+    <>
       <h2>Developed by</h2>
       <p>
         <a href="https://lk.linkedin.com/in/akalanka-weerasooriya-7812b3171">
@@ -36,7 +36,7 @@ const About = () => {
       <br /> <br />
       <h2>Contact</h2>
       akalankaweerasooriya@gmail.com
-    </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mediapipe/hands": "0.4.1635986972",
+    "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.16",
     "@tensorflow-models/handpose": "0.0.7",
     "@tensorflow/tfjs-backend-webgl": "3.13.0",

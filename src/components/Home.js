@@ -113,7 +113,7 @@ const Home = () => {
       </div>
     );
   return (
-    <div className="container py-4">
+    <>
       <div className="row align-items-md-stretch">
         <div style={{ display: "flex", justifyContent: "center" }}>
           Try to do the sign on the left
@@ -167,7 +167,7 @@ const Home = () => {
       </div>
 
       <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.3</footer>
-    </div>
+    </>
   );
 };
 
