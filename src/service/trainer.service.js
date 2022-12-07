@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // const BE_BASE_URL = "http://localhost:5000"
-const BE_BASE_URL = "https://aqueous-peak-24042.herokuapp.com"
+const BE_BASE_URL = "https://nextjs-boilerplate-henna-three.vercel.app"
 
 
 export function cropAndSend(datas, crop, expected, detected) {
@@ -30,6 +30,7 @@ const cropImage = (image, crop) => {
 
     const offsetPixels = 30
     // ref: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+    // TODO: Improve cropping
     ctx.drawImage(
         image,
         crop.x1 * scaleX - offsetPixels,
@@ -52,7 +53,7 @@ const uploadCroppedImage = (dataURI, expected, detected) => {
         expected, current: detected, file: dataURI
     }
     axios
-        .post(`${BE_BASE_URL}/api/image/v2`, data, {
+        .post(`${BE_BASE_URL}/api/image-cors`, data, {
             headers: {
                 //   "x-access-token": this.state.user.token,
                 //   "orgid": this.state.user.orgId,

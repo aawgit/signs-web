@@ -3,3 +3,4 @@ dist/
 lib/
 build/
 src/service/
+src/components/VideoComp.js
