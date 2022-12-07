@@ -30,6 +30,7 @@ const cropImage = (image, crop) => {
 
     const offsetPixels = 30
     // ref: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+    // TODO: Improve cropping
     ctx.drawImage(
         image,
         crop.x1 * scaleX - offsetPixels,
