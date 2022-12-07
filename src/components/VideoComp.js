@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import "@tensorflow/tfjs-backend-webgl";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import { GAME_STATES } from "../utils/constants";
 import { cropAndSend } from "../service/trainer.service";
 

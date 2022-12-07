@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@mui/material";
 import { trainingData } from "../data/training.data";
 import {
   getMultiLevelClassifier,
@@ -48,24 +49,34 @@ const GamePanel = ({
   }
   
   return (
-    <div style={{ alignContent: "center", textAlign: "center" }}>
-      <img
-        src={`${process.env.PUBLIC_URL}${expectedSign}.jpg`}
-        className="rounded"
-        style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}
-        alt="Expected sign"
-      />
-      <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
-        {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
-      </p>
-      <button
-        type="button"
-        className="btn btn-outline-primary"
-        onClick={moveToNext}
-      >
-        Skip
-      </button>
-    </div>
+    <Card sx={{ minWidth: 275 }}>
+      <CardContent>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          Try to do this sign
+        </div>
+
+        <img
+          src={`${process.env.PUBLIC_URL}${expectedSign}.jpg`}
+          className="rounded"
+          style={{
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+          alt="Expected sign"
+        />
+        <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
+          {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
+        </p>
+        <button
+          type="button"
+          className="btn btn-outline-primary mx-auto block"
+          onClick={moveToNext}
+        >
+          Skip
+        </button>
+      </CardContent>
+    </Card>
   );
 };
 

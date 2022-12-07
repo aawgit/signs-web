@@ -6,6 +6,7 @@ module.exports = {
     "react/jsx-filename-extension": ["off"],
     "arrow-body-style": ["off"],
     "react-hooks/exhaustive-deps": ["warn"],
+    "react/jsx-props-no-spreading": ["off"],
     "react/function-component-definition": [
       "warn",
       {
