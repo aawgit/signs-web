@@ -1,8 +1,7 @@
 import axios from "axios"
 
 // const BE_BASE_URL = "http://localhost:5000"
-// const BE_BASE_URL = "https://aqueous-peak-24042.herokuapp.com"
-const BE_BASE_URL = "https://zany-pear-rooster-cuff.cyclic.app"
+const BE_BASE_URL = "https://nextjs-boilerplate-henna-three.vercel.app"
 
 
 export function cropAndSend(datas, crop, expected, detected) {
@@ -24,20 +23,20 @@ const cropImage = (image, crop) => {
     ctx.fillStyle = 'blue'
 
     const pixelRatio = window.devicePixelRatio;
-    // canvas.width = cropWidth * pixelRatio;
-    // canvas.height = cropHeight * pixelRatio;
-    // ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    canvas.width = cropWidth * pixelRatio;
+    canvas.height = cropHeight * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     ctx.imageSmoothingQuality = 'high';
 
-    const offsetPixels = 10
+    const offsetPixels = 30
     // ref: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-    // TODO: Finalize the image cropping
+    // TODO: Improve cropping
     ctx.drawImage(
         image,
-        crop.x1 * scaleX - 20,
-        crop.y1 * scaleY - 20,
-        cropWidth * scaleX + 20,
-        cropHeight * scaleY + 20,
+        crop.x1 * scaleX - offsetPixels,
+        crop.y1 * scaleY - offsetPixels,
+        cropWidth * scaleX + offsetPixels,
+        cropHeight * scaleY + offsetPixels,
         0,
         0,
         cropWidth * scaleX + offsetPixels,
@@ -54,7 +53,7 @@ const uploadCroppedImage = (dataURI, expected, detected) => {
         expected, current: detected, file: dataURI
     }
     axios
-        .post(`${BE_BASE_URL}/api/image/v2`, data, {
+        .post(`${BE_BASE_URL}/api/image-cors`, data, {
             headers: {
                 //   "x-access-token": this.state.user.token,
                 //   "orgid": this.state.user.orgId,
