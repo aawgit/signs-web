@@ -282,7 +282,7 @@ function classifyRuleBased(pred, angles) {
             sign = 30
         return sign
     }
-    else return pred
+    else return Number(pred)
 }
 
 function getAngles(landmarks) {

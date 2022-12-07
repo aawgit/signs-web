@@ -43,10 +43,10 @@ const GamePanel = ({
   }
 
   // TODO: Move this block to a game controller
-  if (expectedSign && expectedSign === prediction) {
+  if (expectedSign && expectedSign == prediction) {
     sendGameStatusToParent(GAME_STATES.won);
   }
-
+  
   return (
     <div style={{ alignContent: "center", textAlign: "center" }}>
       <img
