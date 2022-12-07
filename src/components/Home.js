@@ -166,7 +166,7 @@ const Home = () => {
         </div>
       </div>
 
-      <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.3</footer>
+      <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.4</footer>
     </div>
   );
 };
