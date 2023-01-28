@@ -116,6 +116,7 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData, isMo
         top: 0, left: 0, bottom: 0, right: 0
       }}
       className="rounded"
+      mirrored={true}
     />
   </div>
 
@@ -143,7 +144,7 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData, isMo
   let correctSign = <div></div>
   if (gameStatus == GAME_STATES.won) correctSign = <img src={process.env.PUBLIC_URL + "correct.png"}
     style={{
-      width: "100px",
+      width: "25%",
       top: "50%",
       left: "45%",
       position: "absolute"

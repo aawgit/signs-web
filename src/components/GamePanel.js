@@ -12,8 +12,7 @@ const GamePanel = ({
   sendGameStatusToParent,
   gameStatus: masterGameStatus,
   expectedSign,
-  moveToNext,
-  isMobile
+  moveToNext
 }) => {
   const [clf, setClf] = useState("");
 
@@ -53,7 +52,7 @@ const GamePanel = ({
       <img
         src={`${process.env.PUBLIC_URL}${expectedSign}.jpg`}
         className="rounded"
-        style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}
+        style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "100%" }}
         alt="Expected sign"
       />
       <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
