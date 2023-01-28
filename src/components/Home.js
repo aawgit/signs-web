@@ -43,8 +43,8 @@ import {
 // Performance
 //  - Remove unnecessary steps
 
-const getRandomizedSignsToPlay = () =>
-  [...signsToPlay].sort(() => (Math.random() > 0.5 ? 1 : -1));
+const shuffleSigns = () =>
+  [...signsToPlay].slice().sort(() => Math.random() - 0.5);
 
 const Home = () => {
   const [handData, setHandData] = useState();
@@ -57,7 +57,7 @@ const Home = () => {
 
   const getNextSign = useCallback(() => {
     if (!randomizedSignsRef.current.length)
-      randomizedSignsRef.current = getRandomizedSignsToPlay();
+      randomizedSignsRef.current = shuffleSigns();
 
     return randomizedSignsRef.current.shift();
   }, []);
@@ -105,18 +105,11 @@ const Home = () => {
   if (expectedSign) {
     expectedSignForUI = expectedSign;
   }
-  if (isMobile)
-    return (
-      <div>
-        Sorry, this doesn&apos;t work on mobiles phone screens yet. Please try
-        on a laptop or desktop computer.
-      </div>
-    );
   return (
     <div className="container py-4">
       <div className="row align-items-md-stretch">
         <div style={{ display: "flex", justifyContent: "center" }}>
-          Try to do the sign on the left
+          Try to do the displayed sign
         </div>
         <div className="col-md-6">
           <div className="h-100 p-5 text-dark bg-light border rounded-3">
@@ -127,6 +120,7 @@ const Home = () => {
               sendGameStatusToParent={sendGameStatusToParent}
               moveToNext={moveToNext}
               expectedSign={expectedSignForUI}
+              isMobile = {isMobile}
             />
           </div>
         </div>
@@ -136,6 +130,7 @@ const Home = () => {
               sendDataToParent={sendDataToParent}
               gameStatus={gameStatus}
               sendData={sendChecked}
+              isMobile = {isMobile}
             />
             <div>
               <label

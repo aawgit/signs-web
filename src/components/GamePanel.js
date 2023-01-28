@@ -13,6 +13,7 @@ const GamePanel = ({
   gameStatus: masterGameStatus,
   expectedSign,
   moveToNext,
+  isMobile
 }) => {
   const [clf, setClf] = useState("");
 
@@ -58,6 +59,9 @@ const GamePanel = ({
       <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
         {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
       </p>
+      {/* <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
+        {`debug msg ${prediction}`}
+      </p> */}
       <button
         type="button"
         className="btn btn-outline-primary"

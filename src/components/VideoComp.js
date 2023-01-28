@@ -3,6 +3,7 @@ import * as handpose from "@tensorflow-models/handpose";
 import Webcam from "react-webcam";
 import "@tensorflow/tfjs-backend-webgl";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {  getPose2 } from "../service/detector.service";
 import { GAME_STATES } from "../utils/constants";
 import { cropAndSend } from "../service/trainer.service";
 
@@ -14,20 +15,22 @@ const current = 1
 
 let SEND_FLAG = true
 
-export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
+export default function VideoComp({ sendDataToParent, gameStatus, sendData, isMobile}) {
   const [cameraHidden, setCameraHidden] = useState("hidden");
   const [pausedImage, setPausedImage] = useState();
   const webcamRef = useRef();
 
   // TODO: Refactor and move these 2 functions to a seperate file
-  const uploadPoses = async (net) => {
+  const uploadPoses = async () => {
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
       webcamRef.current.video.readyState === 4
       && SEND_FLAG
     ) {
-      const lmEst = await net.estimateHands(webcamRef.current.video)
+      // const lmEst = await net.estimateHands(webcamRef.current.video)
+      // TODO: Evaluate getPose and getPose2 in terms of accuracy and performance 
+      const lmEst = await getPose2(webcamRef.current.video, false)
       if (lmEst && lmEst.length > 0) {
         const bbox = lmEst[0].boundingBox
         if (bbox) {
@@ -42,7 +45,7 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
       }
     }
     setTimeout(() => {
-      uploadPoses(net);
+      uploadPoses();
 
     }, UPLOAD_INTERVAL);
   };
@@ -63,27 +66,31 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
     [webcamRef]
   );
 
-  const detect = async (net) => {
+  const detect = async () => {
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
       webcamRef.current.video.readyState === 4
     ) {
-      const poseEstimateResult = await net.estimateHands(webcamRef.current.video)
+      // const poseEstimateResult = await net.estimateHands(webcamRef.current.video)
+      // const poseEstimateResult = null //await getPose(webcamRef.current.video)
+      // await getPose(webcamRef.current.video)
+      // TODO: Evaluate getPose and getPose2 in terms of accuracy and performance 
+      const poseEstimateResult = await getPose2(webcamRef.current.video, isMobile)
       sendDataToParent(poseEstimateResult);
       if (cameraHidden === "hidden") {
         setCameraHidden("visible");
       }
     }
     setTimeout(() => {
-      detect(net);
+      detect();
     }, 100);
   };
 
   const runHandpose = async () => {
-    const net = await handpose.load();
-    detect(net);
-    uploadPoses(net)
+    // const net = await handpose.load();
+    detect();
+    uploadPoses()
   };
 
   useEffect(() => runHandpose(), []);
@@ -100,6 +107,10 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData}) {
     <Webcam
       ref={webcamRef}
       screenshotFormat="image/jpeg"
+      // videoConstraints={{
+      //   height: 600,
+      //   width: 600
+      // }}
       style={{
         width: widthx,
         top: 0, left: 0, bottom: 0, right: 0
