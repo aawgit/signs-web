@@ -20,7 +20,7 @@ export const getMode = (arr) => {
 };
 
 export class OutputFilter {
-  constructor(bufferSize = 15) {
+  constructor(bufferSize = 5) {
     this.buffer = new Array(bufferSize).fill(0);
   }
 

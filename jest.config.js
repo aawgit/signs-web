@@ -22,9 +22,9 @@ module.exports = {
     "<rootDir>/node_modules/", "<rootDir>/dist/*"
   ],
   transformIgnorePatterns: [`/node_modules/(?!(sip\.js))`],
-  preset: 'ts-jest',
+  // preset: 'ts-jest',
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    // '^.+\\.(ts|tsx)?$': 'ts-jest',
     "^.+\\.(js|jsx)$": "babel-jest",
   }
 };

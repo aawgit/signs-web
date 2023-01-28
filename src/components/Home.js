@@ -43,8 +43,8 @@ import {
 // Performance
 //  - Remove unnecessary steps
 
-const getRandomizedSignsToPlay = () =>
-  [...signsToPlay].sort(() => (Math.random() > 0.5 ? 1 : -1));
+const shuffleSigns = () =>
+  [...signsToPlay].slice().sort(() => Math.random() - 0.5);
 
 const Home = () => {
   const [handData, setHandData] = useState();
@@ -57,7 +57,7 @@ const Home = () => {
 
   const getNextSign = useCallback(() => {
     if (!randomizedSignsRef.current.length)
-      randomizedSignsRef.current = getRandomizedSignsToPlay();
+      randomizedSignsRef.current = shuffleSigns();
 
     return randomizedSignsRef.current.shift();
   }, []);
@@ -105,20 +105,65 @@ const Home = () => {
   if (expectedSign) {
     expectedSignForUI = expectedSign;
   }
-  if (isMobile)
-    return (
-      <div>
-        Sorry, this doesn&apos;t work on mobiles phone screens yet. Please try
-        on a laptop or desktop computer.
-      </div>
-    );
+  const mobileV = <div className="container py-4">
+    <div className="row align-items-md-stretch">
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          Try to do the displayed sign
+        </div>
+         <div className="h-100 p-1 text-dark bg-light border rounded-3 card w-50">
+    <GamePanel
+      handData={handData}
+      gameStatus={gameStatus}
+      sendSignToParent={sendSignToParent}
+      sendGameStatusToParent={sendGameStatusToParent}
+      moveToNext={moveToNext}
+      expectedSign={expectedSignForUI}
+    />
+  </div>
+    <div className="h-100 p-1 bg-light border rounded-3 card w-50">
+      <VideoComp
+        sendDataToParent={sendDataToParent}
+        gameStatus={gameStatus}
+        sendData={sendChecked}
+      />
+
+    </div>
+    <div>
+      <label
+        className="form-check-label"
+        htmlFor="flexCheckDefault"
+        style={{ marginRight: "30px" }}
+      >
+        <small>Send data to improve</small>
+      </label>
+      <input
+        className="form-check-input"
+        type="checkbox"
+        onChange={handleCheckboxClick}
+        value=""
+        id="flexCheckDefault"
+        checked={sendChecked}
+      />
+    </div>
+    <p>
+      <small>
+        <i>
+          When enabled, a few images of your hand will be saved for
+          further improving this service.
+        </i>
+      </small>
+    </p>
+  </div>
+  </div>
+  
+ if (isMobile) return mobileV
   return (
     <div className="container py-4">
       <div className="row align-items-md-stretch">
         <div style={{ display: "flex", justifyContent: "center" }}>
-          Try to do the sign on the left
+          Try to do the displayed sign
         </div>
-        <div className="col-md-6">
+        <div className="col-md-5">
           <div className="h-100 p-5 text-dark bg-light border rounded-3">
             <GamePanel
               handData={handData}
@@ -127,15 +172,17 @@ const Home = () => {
               sendGameStatusToParent={sendGameStatusToParent}
               moveToNext={moveToNext}
               expectedSign={expectedSignForUI}
+              isMobile = {isMobile}
             />
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-7">
           <div className="h-100 p-5 bg-light border rounded-3">
             <VideoComp
               sendDataToParent={sendDataToParent}
               gameStatus={gameStatus}
               sendData={sendChecked}
+              isMobile = {isMobile}
             />
             <div>
               <label
@@ -166,7 +213,7 @@ const Home = () => {
         </div>
       </div>
 
-      <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.4</footer>
+      <footer className="pt-3 mt-4 text-muted border-top">1.0.0-alpha.5</footer>
     </div>
   );
 };

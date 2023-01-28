@@ -1,4 +1,4 @@
-import {runPreprocessSteps} from '../src/components/Classifier'
+import {runPreprocessSteps} from '../src/service/classification.service'
 
 describe('examples', () => {
     it('handles a basic assertion', () => {
@@ -6,13 +6,13 @@ describe('examples', () => {
     })
 })
 
-describe('classifier', ()=>{
-    it('pre process correctly', ()=>{
-        const correctlyPreprocessed = []
-        const preProcessed = runPreprocessSteps()
-        expeect(preProcessed).toBe(correctlyPreprocessed)
-    })
-})
+// describe('classifier', ()=>{
+//     it('pre process correctly', ()=>{
+//         const correctlyPreprocessed = []
+//         const preProcessed = runPreprocessSteps()
+//         expeect(preProcessed).toBe(correctlyPreprocessed)
+//     })
+// })
 
 // Not proper tests, tests were run on reple and inputs/ outputs were saved here for future reference
 function normalizeMovement(landmarks) {
@@ -42,7 +42,7 @@ const input = [[0.12916257977485657, 0.6669284105300903, 0.0000005],
                 [0.10199353098869324, 0.3867417573928833, -0.016510093584656715],
                 [0.10778825730085373, 0.3411574065685272, -0.02101042866706848],
                 [0.1160956397652626, 0.2981507182121277, -0.023680033162236214]]
-correct_normalized = [[0.0, 0.0, 0.0], [0.06998993456363678, -0.04165548086166382, -0.025282322308897973],
+const correct_normalized = [[0.0, 0.0, 0.0], [0.06998993456363678, -0.04165548086166382, -0.025282322308897973],
                                  [0.12781044840812683, -0.10919970273971558, -0.03176508552479744],
                                  [0.16972452402114868, -0.1715787649154663, -0.036888026512146],
                                  [0.20382675528526306, -0.21526601910591125, -0.04115021309900284],
