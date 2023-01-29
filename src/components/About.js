@@ -3,6 +3,7 @@ import React from "react";
 const About = () => {
   return (
     <div className="container py-4">
+      <p>This application translates Sinhala Sign Language Fingerspelling alphabet in real time using computer vision and machine learning.</p>
       <h2>Developed by</h2>
       <p>
         <a href="https://lk.linkedin.com/in/akalanka-weerasooriya-7812b3171">
@@ -14,7 +15,7 @@ const About = () => {
           Sinhala Fingerspelling Sign Language Recognition with Computer Vision
         </a>
         , <br />
-        co-authored by{" "}
+        co-authored and supervised by{" "}
         <a href="https://lk.linkedin.com/in/thanujad">Dr.Thanuja Ambegoda</a>
       </p>
       <h2>Contributors</h2>

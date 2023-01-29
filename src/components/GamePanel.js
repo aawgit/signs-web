@@ -46,17 +46,17 @@ const GamePanel = ({
   if (expectedSign && expectedSign == prediction) {
     sendGameStatusToParent(GAME_STATES.won);
   }
-  
+  const expectedLetter = expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null
   return (
     <div style={{ alignContent: "center", textAlign: "center" }}>
       <img
         src={`${process.env.PUBLIC_URL}${expectedSign}.jpg`}
         className="rounded"
         style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "100%" }}
-        alt="Expected sign"
+        alt={`sign for ${expectedLetter}`}
       />
       <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
-        {expectedSign ? LABEL_VS_INDEX[expectedSign].split(" ")[1] : null}
+        {expectedLetter}
       </p>
       {/* <p style={{ textAlign: "center", fontSize: "50px", color: "#eb8c34" }}>
         {`debug msg ${prediction}`}

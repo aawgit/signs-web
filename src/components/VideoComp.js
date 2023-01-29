@@ -117,6 +117,7 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData, isMo
       }}
       className="rounded"
       mirrored={true}
+      alt="Users webcam view"
     />
   </div>
 
@@ -136,7 +137,8 @@ export default function VideoComp({ sendDataToParent, gameStatus, sendData, isMo
       <img src={image} className="rounded" style={{
         visibility: cameraHidden,
         bottom: 0,
-        width: "100%"
+        width: "100%",
+        alt: "Users webcam paused"
       }} />
 
   }

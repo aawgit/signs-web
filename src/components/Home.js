@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "@tensorflow/tfjs-backend-webgl";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import GamePanel from "./GamePanel";
 import VideoComp from "./VideoComp";
 import {
@@ -8,27 +11,25 @@ import {
   IMAGE_PAUSED_TIME,
 } from "../utils/constants";
 
-// Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-// // TODO: Add SDKs for Firebase products that you want to use
-// // https://firebase.google.com/docs/web/setup#available-libraries
 
-// // Your web app's Firebase configuration
-// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDqF1Kkzo8tbeV9zEMdMpyyNJO_A5em2iw",
-//   authDomain: "signsl.firebaseapp.com",
-//   projectId: "signsl",
-//   storageBucket: "signsl.appspot.com",
-//   messagingSenderId: "739991459341",
-//   appId: "1:739991459341:web:daf1c2b3be878720c0a744",
-//   measurementId: "G-PKSWR9LCH1"
-// };
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDqF1Kkzo8tbeV9zEMdMpyyNJO_A5em2iw",
+  authDomain: "signsl.firebaseapp.com",
+  projectId: "signsl",
+  storageBucket: "signsl.appspot.com",
+  messagingSenderId: "739991459341",
+  appId: "1:739991459341:web:daf1c2b3be878720c0a744",
+  measurementId: "G-PKSWR9LCH1"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 // TODO:
 // Data collection
@@ -43,15 +44,18 @@ import {
 // Performance
 //  - Remove unnecessary steps
 
-const shuffleSigns = () =>
-  [...signsToPlay].slice().sort(() => Math.random() - 0.5);
+const shuffleSigns = () =>{
+  console.log(`Shufffling...`)
+return  [...signsToPlay].slice().sort(() => Math.random() - 0.5);
+}
+ 
 
 const Home = () => {
   const [handData, setHandData] = useState();
   // const [expectedSign, setExpectedSign] = useState();
   const [currentSign, setCurrentSign] = useState();
   const [gameStatus, setGameStatus] = useState(GAME_STATES.playing);
-  const [expectedSign, setExpectedSign] = useState(1);
+  const [expectedSign, setExpectedSign] = useState(23);
   const randomizedSignsRef = useRef([]);
   const [sendChecked, setSendChecked] = useState(true);
 
@@ -101,7 +105,7 @@ const Home = () => {
     };
   }, [gameStatus, moveToNext]);
 
-  let expectedSignForUI = 1;
+  let expectedSignForUI = null;
   if (expectedSign) {
     expectedSignForUI = expectedSign;
   }
